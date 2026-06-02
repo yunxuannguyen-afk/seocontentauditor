@@ -95,33 +95,6 @@
             font-style: italic;
             margin-bottom: 1.25rem;
         }
-        #articleBody img {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 90%;
-            height: auto;
-            border-radius: 0.75rem;
-            margin-top: 1.25rem;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 2px solid #f1f5f9;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        #articleBody img:hover {
-            transform: scale(1.01);
-            border-color: #3b82f6;
-        }
-        #articleBody figcaption, #articleBody .img-caption {
-            text-align: center;
-            font-style: italic;
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-top: 0.5rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
         #articleBody table {
             width: 100%;
             border-collapse: collapse;
@@ -137,6 +110,13 @@
             background-color: #f8fafc;
             font-weight: 600;
         }
+
+        /* Active Tool States */
+        .tool-active {
+            background-color: #dbeafe !important;
+            color: #1e40af !important;
+            border-color: #bfdbfe !important;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -150,17 +130,14 @@
             </div>
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                    SEO Content Auditor <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">V5.0 (Semantic Intent)</span>
+                    SEO Content Auditor <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">V5.3 (Restore History Edition)</span>
                 </h1>
                 <p class="text-xs text-slate-500">Hệ thống đồng bộ dán trực tiếp từ Google Docs & so sánh thông minh đối thủ</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="loadSampleDocsData()" class="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-150 flex items-center gap-2">
-                <i class="fa-solid fa-file-import"></i> Tải bài viết mẫu
-            </button>
-            <button onclick="runSEOAudit()" class="px-5 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md shadow-blue-500/25 transition-all duration-150 flex items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Phân tích bài viết
+            <button onclick="loadSampleDocsData()" class="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-150 flex items-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-file-import pointer-events-none"></i> <span class="pointer-events-none">Tải bài viết mẫu</span>
             </button>
         </div>
     </div>
@@ -181,23 +158,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Parent Keyword (Từ khóa chính) <span class="text-red-500">*</span></label>
-                    <input type="text" id="parentKeyword" placeholder="Ví dụ: cách viết bài chuẩn seo" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    <input type="text" id="parentKeyword" oninput="runRealtimeAudit()" placeholder="Ví dụ: cách viết bài chuẩn seo" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Sub-Keywords (Từ khóa phụ - cách nhau bằng dấu phẩy)</label>
-                    <input type="text" id="subKeywords" placeholder="Ví dụ: checklist seo, outline bài viết, tối ưu seo" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Tên file Doc lưu trữ <span class="text-red-500">*</span></label>
-                    <input type="text" id="docFilename" placeholder="Ví dụ: cách viết bài chuẩn seo" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                    <p class="text-[10px] text-slate-400 mt-1">Yêu cầu: Nội dung điền "Parent Keyword"</p>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Mục tiêu Số lượng từ (Wordcount)</label>
-                    <input type="number" id="targetWordCount" placeholder="Ví dụ: 1200" value="1000" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Sub-Keywords (Cách nhau bằng dấu phẩy)</label>
+                    <input type="text" id="subKeywords" oninput="runRealtimeAudit()" placeholder="Ví dụ: checklist seo, outline bài viết, tối ưu seo" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
                 </div>
             </div>
 
@@ -207,7 +172,7 @@
                         <label class="block text-xs font-bold text-slate-700">Tiêu đề (Title Tag) <span class="text-red-500">*</span></label>
                         <span id="titleCounter" class="text-xs text-slate-400">0 / 70 ký tự (0 từ)</span>
                     </div>
-                    <input type="text" id="seoTitle" oninput="updateCounters()" placeholder="Tiêu đề bài viết ngắn gọn, súc tích, đánh vào cảm xúc..." class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    <input type="text" id="seoTitle" oninput="updateCounters(); runRealtimeAudit();" placeholder="Tiêu đề bài viết ngắn gọn, súc tích, đánh vào cảm xúc..." class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
                 </div>
 
                 <div>
@@ -215,7 +180,7 @@
                         <label class="block text-xs font-bold text-slate-700">Meta Description <span class="text-red-500">*</span></label>
                         <span id="metaCounter" class="text-xs text-slate-400">0 / 160 ký tự</span>
                     </div>
-                    <textarea id="metaDesc" oninput="updateCounters()" rows="2" placeholder="Tóm tắt bài viết mang lại giá trị, chứa Parent Keyword bên trái & CTA..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none"></textarea>
+                    <textarea id="metaDesc" oninput="updateCounters(); runRealtimeAudit();" rows="2" placeholder="Tóm tắt bài viết mang lại giá trị, chứa Parent Keyword bên trái & CTA..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none"></textarea>
                 </div>
             </div>
         </div>
@@ -230,26 +195,22 @@
                 <button type="button" onclick="autoGenerateSampleOutlines()" class="text-xs text-blue-600 hover:underline font-bold">Tự điền nhanh mẫu</button>
             </div>
             
-            <p class="text-xs text-slate-500 mb-3">
-                Dán dàn ý đối thủ để hệ thống bóc tách chuẩn xác nhất. Có hỗ trợ các thẻ dạng <strong>&lt;H1&gt;</strong>, <strong>&lt;H2&gt;</strong>, <strong>&lt;H3&gt;</strong>, <strong>&lt;H4&gt;</strong>...
-            </p>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-emerald-700 mb-1"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
-                    <textarea id="outlineComp1" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa&#10;  &lt;H3&gt; Thiết kế outline" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
-                    <textarea id="outlineComp2" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description chất lượng&#10;&lt;H2&gt; Đo lường tính hiệu quả" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
-                    <textarea id="outlineComp3" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu&#10;  &lt;H3&gt; Phân tích Search Intent người dùng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
-                    <textarea id="outlineComp4" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng&#10;  &lt;H3&gt; Chèn từ khóa thông minh&#10;&lt;H2&gt; Trải nghiệm người dùng E-E-A-T" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
             </div>
         </div>
@@ -262,27 +223,26 @@
                         <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
                         Nội dung bài viết (Rich Text Editor)
                     </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Dán bài viết trực tiếp từ Google Docs để bảo toàn Heading, định dạng In đậm/In nghiêng & Hình ảnh.</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Dán bài viết trực tiếp từ Google Docs để bảo toàn Heading, định dạng In đậm/In nghiêng.</p>
                 </div>
                 <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1 rounded-lg">
-                    <button onclick="execCmd('formatBlock', '<h2>')" title="Đặt thẻ Heading 2" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm">H2</button>
-                    <button onclick="execCmd('formatBlock', '<h3>')" title="Đặt thẻ Heading 3" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm">H3</button>
-                    <button onclick="execCmd('bold')" title="In đậm" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm"><i class="fa-solid fa-bold"></i></button>
-                    <button onclick="execCmd('italic')" title="In nghiêng" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm"><i class="fa-solid fa-italic"></i></button>
-                    <button onclick="execCmd('insertUnorderedList')" title="Danh sách không thứ tự" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm"><i class="fa-solid fa-list-ul"></i></button>
-                    <button onclick="execCmd('insertOrderedList')" title="Danh sách có thứ tự" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm"><i class="fa-solid fa-list-ol"></i></button>
-                    <button onclick="insertImagePlaceholder()" title="Chèn ảnh mẫu chuẩn SEO" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm"><i class="fa-solid fa-image"></i> + Ảnh</button>
-                    <button onclick="execCmd('removeFormat')" title="Xóa định dạng" class="px-2 py-1 text-xs text-red-600 bg-white hover:bg-red-50 rounded shadow-sm"><i class="fa-solid fa-eraser"></i></button>
+                    <button id="btnH1" onclick="execCmd('formatBlock', '<h1>')" title="Đặt thẻ Heading 1" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all">H1</button>
+                    <button id="btnH2" onclick="execCmd('formatBlock', '<h2>')" title="Đặt thẻ Heading 2" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all">H2</button>
+                    <button id="btnH3" onclick="execCmd('formatBlock', '<h3>')" title="Đặt thẻ Heading 3" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all">H3</button>
+                    <button id="btnBold" onclick="execCmd('bold')" title="In đậm" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all"><i class="fa-solid fa-bold"></i></button>
+                    <button id="btnItalic" onclick="execCmd('italic')" title="In nghiêng" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all"><i class="fa-solid fa-italic"></i></button>
+                    <button id="btnUl" onclick="execCmd('insertUnorderedList')" title="Danh sách không thứ tự" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all"><i class="fa-solid fa-list-ul"></i></button>
+                    <button id="btnOl" onclick="execCmd('insertOrderedList')" title="Danh sách có thứ tự" class="px-2 py-1 text-xs text-slate-700 bg-white hover:bg-slate-50 rounded shadow-sm transition-all"><i class="fa-solid fa-list-ol"></i></button>
+                    <button onclick="clearFormatting()" title="Xóa toàn bộ định dạng về chữ thường" class="px-2.5 py-1 text-xs text-red-600 bg-white hover:bg-red-50 rounded shadow-sm transition-all"><i class="fa-solid fa-eraser mr-1"></i> Clear</button>
                 </div>
             </div>
 
             <!-- Content Editable Div -->
-            <div id="articleBody" contenteditable="true" oninput="updateCounters()" class="w-full flex-grow p-4 min-h-[400px] max-h-[700px] overflow-y-auto bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all scroll-custom" placeholder="Hãy dán (Ctrl+V) bài viết của bạn từ Google Docs vào đây hoặc bắt đầu gõ trực tiếp..."></div>
+            <div id="articleBody" contenteditable="true" oninput="updateCounters(); runRealtimeAudit();" onkeyup="checkSelectionState()" onmouseup="checkSelectionState()" class="w-full flex-grow p-4 min-h-[400px] max-h-[700px] overflow-y-auto bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all scroll-custom" placeholder="Hãy dán (Ctrl+V) bài viết của bạn từ Google Docs vào đây hoặc bắt đầu gõ trực tiếp..."></div>
             
             <div class="mt-4 p-4 bg-slate-50 border border-slate-100 rounded-xl flex flex-wrap gap-4 text-xs text-slate-500 justify-between">
                 <div>Tổng số từ: <span id="actualWords" class="font-bold text-slate-900">0</span> từ</div>
-                <div>Hình ảnh phát hiện: <span id="detectedImages" class="font-bold text-slate-900">0</span></div>
-                <div>Tiêu đề (Heading H2/H3): <span id="headingCount" class="font-bold text-slate-900">0</span></div>
+                <div>Tiêu đề (Heading H1/H2/H3): <span id="headingCount" class="font-bold text-slate-900">0</span></div>
                 <div>Số đoạn văn (Paragraphs): <span id="paragraphCount" class="font-bold text-slate-900">0</span></div>
                 <div class="flex gap-2">
                     <button onclick="copyPlainText()" class="text-blue-600 hover:underline font-bold"><i class="fa-solid fa-copy"></i> Copy Text thuần</button>
@@ -314,7 +274,25 @@
                 </div>
             </div>
 
-            <p id="scoreSummaryText" class="text-xs text-slate-500 px-4 mt-2">Dán văn bản có định dạng vào trình soạn thảo và bấm nút <strong class="text-blue-600">Phân tích bài viết</strong> ở trên để cập nhật điểm chất lượng chi tiết.</p>
+            <p id="scoreSummaryText" class="text-xs text-slate-500 px-4 mt-2">Dán văn bản có định dạng vào trình soạn thảo để nhận điểm chất lượng chi tiết tức thì.</p>
+            
+            <!-- Save Audit Snapshot Button -->
+            <button onclick="saveCurrentAuditSnapshot()" class="mt-3 px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm flex items-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-bookmark"></i> Lưu điểm hiện tại
+            </button>
+        </div>
+
+        <!-- SESSION HISTORY -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xs font-bold text-slate-700 tracking-wider uppercase flex items-center gap-1.5">
+                    <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Lịch sử phân tích (Tối đa 5 lần)
+                </h3>
+                <button onclick="clearAuditHistory()" class="text-[10px] text-red-500 hover:underline font-bold cursor-pointer">Xóa lịch sử</button>
+            </div>
+            <div id="historyList" class="space-y-2 max-h-44 overflow-y-auto scroll-custom">
+                <p class="text-xs text-slate-400 italic text-center py-2">Chưa có bản lưu phân tích nào.</p>
+            </div>
         </div>
 
         <!-- ANALYSIS NAVIGATION TABS -->
@@ -324,7 +302,6 @@
                 <button onclick="switchTab('outline-tab')" id="tabBtn-outline-tab" class="px-4 py-3 border-b-2 border-blue-600 text-blue-600 whitespace-nowrap transition-all"><i class="fa-solid fa-sitemap mr-1"></i> Kiểm tra Outline</button>
                 <button onclick="switchTab('meta-tab')" id="tabBtn-meta-tab" class="px-4 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all"><i class="fa-solid fa-tags mr-1"></i> Title & Meta</button>
                 <button onclick="switchTab('content-tab')" id="tabBtn-content-tab" class="px-4 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all"><i class="fa-solid fa-paragraph mr-1"></i> Cấu trúc & EEAT</button>
-                <button onclick="switchTab('image-tab')" id="tabBtn-image-tab" class="px-4 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all"><i class="fa-solid fa-images mr-1"></i> Quản lý Ảnh</button>
             </div>
 
             <!-- Tabs Body -->
@@ -384,6 +361,16 @@
                 <div id="content-tab" class="tab-content space-y-4 hidden">
                     <h3 class="font-bold text-slate-900 flex items-center gap-1.5"><i class="fa-solid fa-user-tie text-purple-500"></i> Trình bày (Readability) & Tiêu chuẩn E-E-A-T</h3>
                     
+                    <!-- KEYWORD DENSITY VISUAL CARD -->
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 tracking-wider uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-simple text-blue-500"></i> Báo cáo mật độ từ khóa chuẩn SEO (1.5% - 3%)
+                        </h4>
+                        <div id="densityReportList" class="space-y-3">
+                            <p class="text-xs text-slate-400 italic">Vui lòng nhập từ khóa chính để chạy phân tích mật độ...</p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 flex flex-col">
                             <span class="text-slate-400 font-medium">Tổng số câu trong bài</span>
@@ -400,55 +387,11 @@
                     </div>
                 </div>
 
-                <!-- Tab 4: Image & File -->
-                <div id="image-tab" class="tab-content space-y-4 hidden">
-                    <h3 class="font-bold text-slate-900 flex items-center gap-1.5"><i class="fa-solid fa-folder-open text-orange-500"></i> Quản lý Tài nguyên Hình ảnh</h3>
-                    
-                    <div class="p-3 bg-slate-50 rounded-xl text-xs space-y-1">
-                        <div class="flex justify-between"><span>Số lượng ảnh phát hiện:</span> <span id="imgCheckCount" class="font-bold text-slate-800">0</span></div>
-                        <div class="flex justify-between flex-wrap gap-1"><span>Tỷ lệ Heading 2 có ảnh đi kèm:</span> <span id="wordsPerImgCount" class="font-bold text-slate-800">N/A</span></div>
-                        <div class="flex justify-between flex-wrap gap-1"><span>Tiêu chuẩn tối ưu bắt buộc:</span> <span class="text-blue-600 font-bold">Có ít nhất 1 ảnh nằm bên dưới mỗi thẻ H2</span></div>
-                    </div>
-
-                    <div class="p-3 bg-amber-50 rounded-xl text-xs text-amber-800 border border-amber-200 flex gap-2">
-                        <i class="fa-solid fa-lightbulb mt-0.5"></i>
-                        <p><strong>Cấu hình metadata ảnh ảo:</strong> Nhấp trực tiếp vào ảnh bất kỳ trong trình soạn thảo bên trái để khai báo nhanh File Name SEO và mô tả Alt.</p>
-                    </div>
-
-                    <div class="space-y-2" id="imageChecklist">
-                        <!-- JS generated items -->
-                    </div>
-                </div>
-
             </div>
         </div>
 
     </aside>
 </main>
-
-<!-- FLOATING PORTAL FOR IMAGE SEO EDITING -->
-<div id="imageMetaModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 mx-4">
-        <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2"><i class="fa-solid fa-image text-blue-500"></i> Cấu hình Metadata Hình ảnh</h3>
-        <p class="text-xs text-slate-500 mb-4">Khai báo thông số tên file ảo để bộ máy SEO thẩm định.</p>
-        
-        <div class="space-y-3">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">SEO File Name đề xuất (Không dấu, viết thường, phân tách bằng dấu cách) <span class="text-red-500">*</span></label>
-                <input type="text" id="modalImgFilename" placeholder="Ví dụ: cach viet bai seo chi tiet" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung Caption / Alt (chú thích) <span class="text-red-500">*</span></label>
-                <textarea id="modalImgCaption" rows="3" placeholder="Ví dụ: Hình 1: Quy trình lập sơ đồ dàn ý chuẩn SEO..." class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-            </div>
-        </div>
-
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="closeImageModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">Hủy bỏ</button>
-            <button onclick="saveImageMeta()" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow font-medium">Lưu thông tin</button>
-        </div>
-    </div>
-</div>
 
 <footer class="bg-white border-t border-slate-200 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 space-y-2.5">
@@ -478,7 +421,38 @@
 
 <script>
     let activeTabId = 'outline-tab';
-    let targetSelectedImg = null;
+    let debounceTimer = null;
+    let currentCalculatedScore = 0;
+
+    // Trigger visual toast
+    function showToast(title, message, type = "info") {
+        const toast = document.getElementById('toastBox');
+        const tTitle = document.getElementById('toastTitle');
+        const tMsg = document.getElementById('toastMessage');
+        const tIcon = document.getElementById('toastIcon');
+
+        if (!toast || !tTitle || !tMsg || !tIcon) return;
+
+        tTitle.innerText = title;
+        tMsg.innerText = message;
+
+        if (type === "success") {
+            tIcon.className = "p-1.5 bg-emerald-600 rounded-lg text-sm text-white";
+            tIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+        } else if (type === "warning") {
+            tIcon.className = "p-1.5 bg-amber-500 rounded-lg text-sm text-slate-900";
+            tIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+        } else {
+            tIcon.className = "p-1.5 bg-blue-600 rounded-lg text-sm text-white";
+            tIcon.innerHTML = `<i class="fa-solid fa-info"></i>`;
+        }
+
+        toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 max-w-sm bg-slate-900 text-white p-4 rounded-xl shadow-2xl flex items-center gap-3";
+        
+        setTimeout(() => {
+            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 max-w-sm bg-slate-900 text-white p-4 rounded-xl shadow-2xl flex items-center gap-3";
+        }, 4000);
+    }
 
     // Helper: Remove Vietnamese accents and preserve word boundaries
     function removeAccents(str) {
@@ -498,6 +472,95 @@
         document.execCommand(command, false, val);
         document.getElementById('articleBody').focus();
         updateCounters();
+        runRealtimeAudit();
+        checkSelectionState();
+    }
+
+    // Comprehensive Clear Formatting back to Normal Paragraphs
+    function clearFormatting() {
+        const editor = document.getElementById('articleBody');
+        editor.focus();
+        document.execCommand('removeFormat', false, null);
+        document.execCommand('formatBlock', false, '<p>');
+        updateCounters();
+        runRealtimeAudit();
+        checkSelectionState();
+        showToast("Đã dọn dẹp", "Đã đưa toàn bộ văn bản được chọn về dạng chữ thường mặc định.", "success");
+    }
+
+    // Active State Inspector for the Editor
+    function checkSelectionState() {
+        const btnH1 = document.getElementById('btnH1');
+        const btnH2 = document.getElementById('btnH2');
+        const btnH3 = document.getElementById('btnH3');
+        const btnBold = document.getElementById('btnBold');
+        const btnItalic = document.getElementById('btnItalic');
+        const btnUl = document.getElementById('btnUl');
+        const btnOl = document.getElementById('btnOl');
+
+        // Check blocks
+        const blockType = document.queryCommandValue('formatBlock');
+        if (blockType === 'h1') {
+            btnH1.classList.add('tool-active');
+            btnH2.classList.remove('tool-active');
+            btnH3.classList.remove('tool-active');
+        } else if (blockType === 'h2') {
+            btnH2.classList.add('tool-active');
+            btnH1.classList.remove('tool-active');
+            btnH3.classList.remove('tool-active');
+        } else if (blockType === 'h3') {
+            btnH3.classList.add('tool-active');
+            btnH1.classList.remove('tool-active');
+            btnH2.classList.remove('tool-active');
+        } else {
+            btnH1.classList.remove('tool-active');
+            btnH2.classList.remove('tool-active');
+            btnH3.classList.remove('tool-active');
+        }
+
+        // Check inline styling
+        if (document.queryCommandState('bold')) {
+            btnBold.classList.add('tool-active');
+        } else {
+            btnBold.classList.remove('tool-active');
+        }
+
+        if (document.queryCommandState('italic')) {
+            btnItalic.classList.add('tool-active');
+        } else {
+            btnItalic.classList.remove('tool-active');
+        }
+
+        // Check lists
+        if (document.queryCommandState('insertUnorderedList')) {
+            btnUl.classList.add('tool-active');
+        } else {
+            btnUl.classList.remove('tool-active');
+        }
+
+        if (document.queryCommandState('insertOrderedList')) {
+            btnOl.classList.add('tool-active');
+        } else {
+            btnOl.classList.remove('tool-active');
+        }
+    }
+
+    // Helper: Compute precise keyword density
+    function getKeywordDensity(text, keyword) {
+        if (!text || !keyword) return { count: 0, density: 0 };
+        const cleanText = removeAccents(text);
+        const cleanKw = removeAccents(keyword);
+        
+        const escapedKw = cleanKw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`\\b${escapedKw}\\b`, 'gi');
+        const matches = cleanText.match(regex);
+        const count = matches ? matches.length : 0;
+        
+        const totalWords = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+        const kwWords = keyword.trim().split(/\s+/).length;
+        
+        const density = totalWords > 0 ? ((count * kwWords) / totalWords) * 100 : 0;
+        return { count, density: parseFloat(density.toFixed(2)), totalWords };
     }
 
     // Dynamic text count listener for Rich Text DOM
@@ -522,12 +585,8 @@
         const wordCount = plainText.trim() === '' ? 0 : plainText.trim().split(/\s+/).length;
         document.getElementById('actualWords').innerText = wordCount;
 
-        // Images Count
-        const images = editor.querySelectorAll('img');
-        document.getElementById('detectedImages').innerText = images.length;
-
-        // Headings H2/H3 Count
-        const headings = editor.querySelectorAll('h2, h3');
+        // Headings H1/H2/H3 Count
+        const headings = editor.querySelectorAll('h1, h2, h3');
         document.getElementById('headingCount').innerText = headings.length;
 
         // Paragraph elements count
@@ -543,8 +602,6 @@
         blocks.forEach(block => {
             // Skip headings
             if (block.closest('h1, h2, h3, h4, h5, h6')) return;
-            // Skip image captions
-            if (block.classList.contains('img-caption') || block.closest('.img-caption') || block.tagName === 'FIGCAPTION') return;
             
             const text = block.innerText ? block.innerText.trim() : '';
             if (text.length <= 15) return;
@@ -583,11 +640,9 @@
             if (node.tagName === 'H2') break;
             
             if (node.tagName !== 'H1' && !node.querySelector('h1, h2')) {
-                if (!node.classList.contains('img-caption') && !node.querySelector('.img-caption') && node.tagName !== 'IMG') {
-                    const txt = node.innerText.trim();
-                    if (txt.length > 10) {
-                        introTexts.push(txt);
-                    }
+                const txt = node.innerText.trim();
+                if (txt.length > 10) {
+                    introTexts.push(txt);
                 }
             }
             node = node.nextElementSibling;
@@ -635,101 +690,14 @@
         activeTabId = tabId;
     }
 
-    // Insert customized image placeholder
-    function insertImagePlaceholder() {
-        const editor = document.getElementById('articleBody');
-        editor.focus();
-
-        const uniqueId = "img_" + Date.now();
-        const placeholderImg = `
-            <div class="my-4 text-center">
-                <img id="${uniqueId}" src="https://placehold.co/600x350/e2e8f0/475569?text=Anh+SEO+Placeholder" alt="Hình: Tải ảnh minh họa nội dung chất lượng cao" data-filename="thiet-lap-outline-seo" data-caption="Hình: Tiến trình tối ưu Outline bài viết tích hợp đối thủ bền vững" />
-                <span class="img-caption" id="caption_${uniqueId}"><i>Hình: Tiến trình tối ưu Outline bài viết tích hợp đối thủ bền vững</i></span>
-            </div>
-            <p>&nbsp;</p>
-        `;
-        document.execCommand('insertHTML', false, placeholderImg);
-        
-        setTimeout(() => {
-            const addedImg = document.getElementById(uniqueId);
-            if (addedImg) {
-                addedImg.addEventListener('click', () => openImageModal(addedImg));
-            }
-        }, 100);
-
-        updateCounters();
-        showToast("Đã chèn ảnh mẫu", "Nhấp trực tiếp lên hình ảnh để cấu hình File Name SEO!", "success");
-    }
-
-    // Image metadata modal trigger
-    function openImageModal(imgNode) {
-        targetSelectedImg = imgNode;
-        const currentFilename = imgNode.getAttribute('data-filename') || '';
-        
-        let currentCaption = '';
-        const parent = imgNode.parentElement;
-        const nextCaptionSpan = parent.querySelector('.img-caption') || imgNode.nextElementSibling;
-        
-        if (nextCaptionSpan && (nextCaptionSpan.tagName === 'SPAN' || nextCaptionSpan.className.includes('caption') || nextCaptionSpan.tagName === 'EM' || nextCaptionSpan.tagName === 'I')) {
-            currentCaption = nextCaptionSpan.innerText;
-        } else if (imgNode.getAttribute('data-caption')) {
-            currentCaption = imgNode.getAttribute('data-caption');
-        }
-
-        document.getElementById('modalImgFilename').value = currentFilename;
-        document.getElementById('modalImgCaption').value = currentCaption;
-        document.getElementById('imageMetaModal').classList.remove('hidden');
-    }
-
-    function closeImageModal() {
-        document.getElementById('imageMetaModal').classList.add('hidden');
-        targetSelectedImg = null;
-    }
-
-    // Save image modal adjustments
-    function saveImageMeta() {
-        if (!targetSelectedImg) return;
-        
-        const filename = document.getElementById('modalImgFilename').value.trim();
-        const caption = document.getElementById('modalImgCaption').value.trim();
-
-        if (!filename || !caption) {
-            showToast("Bắt buộc", "Vui lòng nhập cả tên file và caption để tối ưu SEO!", "warning");
-            return;
-        }
-
-        targetSelectedImg.setAttribute('data-filename', filename);
-        targetSelectedImg.setAttribute('data-caption', caption);
-        targetSelectedImg.setAttribute('alt', caption);
-
-        const parent = targetSelectedImg.parentElement;
-        let captionSpan = parent.querySelector('.img-caption') || targetSelectedImg.nextElementSibling;
-        
-        if (captionSpan && (captionSpan.className.includes('caption') || captionSpan.tagName === 'SPAN' || captionSpan.tagName === 'I' || captionSpan.tagName === 'EM')) {
-            captionSpan.innerHTML = `<i>${caption}</i>`;
-            captionSpan.style.textAlign = 'center';
-            captionSpan.style.display = 'block';
-        } else {
-            const newCaption = document.createElement('span');
-            newCaption.className = "img-caption";
-            newCaption.innerHTML = `<i>${caption}</i>`;
-            newCaption.style.textAlign = 'center';
-            newCaption.style.display = 'block';
-            targetSelectedImg.parentNode.insertBefore(newCaption, targetSelectedImg.nextSibling);
-        }
-
-        showToast("Lưu thành công", "Cấu hình ảnh SEO ảo đã cập nhật!", "success");
-        closeImageModal();
-        updateCounters();
-    }
-
     function autoGenerateSampleOutlines() {
         document.getElementById('outlineComp1').value = "<h2>Khái niệm bài viết chuẩn SEO là gì?</h2>\n<h2>Quy trình viết bài chuẩn SEO cho người mới</h2>\n  <h3>Nghiên cứu từ khóa phù hợp</h3>\n  <h3>Lập outline chi tiết tích hợp đối thủ</h3>\n<h2>Cách viết bài chuẩn SEO On-page chi tiết</h2>\n  <h3>Viết tiêu đề kích thích nhấp chuột</h3>\n  <h3>Tối ưu mật độ từ khóa chuẩn SEO</h3>";
         document.getElementById('outlineComp2').value = "<h2>Bài viết chuẩn SEO là thế nào?</h2>\n<h2>Các bước triển khai bài viết tối ưu Google</h2>\n  <h3>Thiết lập Anchor text</h3>\n  <h3>Viết Meta Description kêu gọi hành động</h3>\n<h2>Đo lường tính hiệu quả của bài viết chuẩn SEO</h2>";
         document.getElementById('outlineComp3').value = "<h2>Tại sao cần viết bài chuẩn SEO?</h2>\n<h2>Quy trình 10 bước viết nội dung chuẩn SEO</h2>\n  <h3>Nghiên cứu Intent người dùng</h3>\n  <h3>Trình bày cấu trúc bài viết</h3>\n<h2>Tối ưu hóa định dạng bài viết</h2>";
-        document.getElementById('outlineComp4').value = "<h2>Định nghĩa viết bài chuẩn SEO</h2>\n<h2>Bí quyết viết bài chuẩn SEO nhanh nhất</h2>\n  <h3>Lập dàn bài khoa học</h3>\n  <h3>Chèn từ khóa tự nhiên và đều</h3>\n<h2>Tối ưu hóa trải nghiệm người dùng (E-E-A-T)</h2>";
+        document.getElementById('outlineComp4').value = "<h2>Định nghĩa viết bài chuẩn SEO</h2>\n<h2>Bí quyết viết bài chuẩn SEO nhanh nhất</h2>\n  <h3>Lập dàn bài khoa học</h3>\n  <h3>Chèn từ khóa tự nhiên và đều</h3>\n<h2>Tối ưu hóa trải nghiệm người dùng (E-E-A-T)</h2>\n<h2>Giải đáp thắc mắc thường gặp</h2>";
         
         showToast("Đã điền Outline mẫu", "Dàn ý của Top 4 đối thủ đã được tự động nạp.", "success");
+        runRealtimeAudit();
     }
 
     function loadSampleDocsData() {
@@ -737,40 +705,23 @@
 
         document.getElementById('parentKeyword').value = "cách viết bài chuẩn seo";
         document.getElementById('subKeywords').value = "checklist seo, outline bài viết, cấu trúc bài viết chuẩn seo, viết bài seo";
-        document.getElementById('docFilename').value = "cách viết bài chuẩn seo"; 
-        document.getElementById('targetWordCount').value = "1200";
 
         document.getElementById('seoTitle').value = "Cách Viết Bài Chuẩn SEO: Quy Trình Đỉnh Cao 8 Bước Phủ Top Google";
-        document.getElementById('metaDesc').value = "Tìm hiểu cách viết bài chuẩn SEO dễ thực hiện nhất giúp phủ sóng thứ hạng Google nhanh nhất. Xem ngay bí mật tối ưu outline tích hợp đối thủ!";
+        document.getElementById('metaDesc').value = "Tìm hiểu cách viết bài chuẩn SEO dễ thực hiện nhất giúp phủ sóng thứ hạng Google nhanh nhất. Xem ngay tìm hiểu thêm bí mật tối ưu outline tích hợp đối thủ!";
 
         autoGenerateSampleOutlines();
 
         const sampleRichHTML = `
             <h1>Cách Viết Bài Chuẩn SEO: Quy Trình Đỉnh Cao 8 Bước Phủ Top Google</h1>
             <p>Trong kỷ nguyên tiếp thị số hiện nay, <strong>cách viết bài chuẩn seo</strong> đóng một vai trò quan trọng trong việc tăng lượng truy cập tự nhiên. Khi nội dung của bạn không được xây dựng dựa trên ý định tìm kiếm của độc giả, nó sẽ dễ dàng trôi dạt ra xa trang nhất của công cụ tìm kiếm Google. Khách hàng luôn mong chờ những bài viết giải quyết nhanh, triệt để vấn đề.</p>
-            
-            <div class="my-4 text-center">
-                <img id="sampleImg_1" src="https://placehold.co/600x320/3b82f6/ffffff?text=Anh+SEO+Tong+Quan" alt="Hình: Cách viết bài chuẩn SEO đóng vai trò đưa bài viết thăng tiến" data-filename="cach-viet-bai-chuan-seo-tong-quan" data-caption="Hình: Cách viết bài chuẩn SEO đóng vai trò đưa bài viết thăng tiến vượt bậc trên SERPs" />
-                <span class="img-caption" id="caption_sampleImg_1"><i>Hình: Cách viết bài chuẩn SEO đóng vai trò đưa bài viết thăng tiến vượt bậc trên SERPs</i></span>
-            </div>
 
             <h2><strong>Khái niệm bài viết chuẩn SEO là gì?</strong></h2>
             <p>Bài viết chuẩn SEO không chỉ đơn giản là nhồi nhét từ khóa vào văn bản. Đây là sự kết hợp nhuần nhuyễn giữa nội dung chất lượng cao đáp ứng ý định tìm kiếm của người dùng và các kỹ thuật tối ưu hóa thân thiện với công cụ tìm kiếm của Google.</p>
-            
-            <div class="my-4 text-center">
-                <img id="sampleImg_h2_1" src="https://placehold.co/600x320/e2e8f0/475569?text=Minh+Hoa+Khuyen+Nghi" alt="Hình: Minh họa cho phần khái niệm bài viết chuẩn SEO" data-filename="khai-niem-bai-viet-chuan-seo" data-caption="Hình: Minh họa giải thích chi tiết khái niệm SEO On-page" />
-                <span class="img-caption" id="caption_sampleImg_h2_1"><i>Hình: Minh họa giải thích chi tiết khái niệm SEO On-page</i></span>
-            </div>
 
             <p>Để xây dựng niềm tin vững chãi cho độc giả, các số liệu trong bài viết được đúc kết trực tiếp từ đội ngũ <em>chuyên gia</em> SEO dày dặn <strong>kinh nghiệm</strong> thực tế tại doanh nghiệp của chúng tôi.</p>
 
             <h2><strong>Quy trình viết bài chuẩn SEO cho người mới</strong></h2>
             <p>Triển khai một bài viết chất lượng đòi hỏi bạn phải tuân thủ nghiêm ngặt các bước kế hoạch khoa học để cấu trúc bài viết chuẩn seo không bị lạc hướng.</p>
-            
-            <div class="my-4 text-center">
-                <img id="sampleImg_h2_2" src="https://placehold.co/600x320/e2e8f0/475569?text=Quy+Trinh+SEO" alt="Hình: Minh họa cho phần Quy trình viết bài" data-filename="quy-trinh-viet-bai-seo" data-caption="Hình: Quy trình thiết kế bài viết chuẩn SEO theo kế hoạch" />
-                <span class="img-caption" id="caption_sampleImg_h2_2"><i>Hình: Quy trình thiết kế bài viết chuẩn SEO theo kế hoạch</i></span>
-            </div>
 
             <h3><strong>Nghiên cứu từ khóa phù hợp</strong></h3>
             <p>Từ khóa chính (parent keyword) và từ khóa phụ (sub-keywords) phải được phân tích kỹ qua các công cụ lớn như Ahrefs hay Keyword Planner.</p>
@@ -780,11 +731,6 @@
 
             <h2><strong>Cách viết bài chuẩn SEO On-page chi tiết</strong></h2>
             <p>Các kỹ thuật Onpage nâng cấp khả năng xếp hạng sẽ đưa bài viết của bạn chạm tới đích cao hơn một cách an toàn nhất.</p>
-            
-            <div class="my-4 text-center">
-                <img id="sampleImg_2" src="https://placehold.co/600x320/10b981/ffffff?text=Outline+SEO" alt="Hình: Việc thiết lập outline bài viết chuẩn SEO giúp tăng tỷ lệ tiếp cận khách hàng tiềm năng" data-filename="thiet-lap-outline-seo" data-caption="Hình: Việc thiết lập outline bài viết chuẩn SEO giúp tăng tỷ lệ tiếp cận khách hàng tiềm năng" />
-                <span class="img-caption" id="caption_sampleImg_2"><i>Hình: Việc thiết lập outline bài viết chuẩn SEO giúp tăng tỷ lệ tiếp cận khách hàng tiềm năng</i></span>
-            </div>
 
             <h3><strong>Viết tiêu đề kích thích nhấp chuột</strong></h3>
             <p>Tiêu đề phải đảm bảo chứa parent keyword ngay phần bên trái đầu tiên và có số ký tự không vượt quá mức 70.</p>
@@ -794,24 +740,16 @@
 
             <h2><strong>Đo lường tính hiệu quả của bài viết chuẩn SEO</strong></h2>
             <p>Sự thành công của chiến dịch được quyết định bởi lượng nhấp chuột thực tế qua báo cáo của Search Console hàng tháng.</p>
-            
-            <div class="my-4 text-center">
-                <img id="sampleImg_h2_4" src="https://placehold.co/600x320/e2e8f0/475569?text=Do+Luong+SEO" alt="Hình: Đo lường hiệu quả bài viết chuẩn SEO On-page" data-filename="do-luong-hieu-qua-seo" data-caption="Hình: Biểu đồ theo dõi thứ hạng từ khóa trên Search Console" />
-                <span class="img-caption" id="caption_sampleImg_h2_4"><i>Hình: Biểu đồ theo dõi thứ hạng từ khóa trên Search Console</i></span>
-            </div>
+
+            <h2><strong>Giải đáp thắc mắc thường gặp (FAQs)</strong></h2>
+            <p>Dưới đây là một số câu hỏi phổ biến từ các cá nhân bắt đầu khởi tạo website. Hãy theo dõi kỹ để nắm bắt cấu trúc chuẩn nhất.</p>
         `;
 
         const editor = document.getElementById('articleBody');
         editor.innerHTML = sampleRichHTML;
-        
-        setTimeout(() => {
-            const imgs = editor.querySelectorAll('img');
-            imgs.forEach(img => {
-                img.addEventListener('click', () => openImageModal(img));
-            });
-        }, 100);
 
         updateCounters();
+        runRealtimeAudit();
         showToast("Dữ liệu mẫu sẵn sàng", "Đã nạp bài viết chuẩn SEO mẫu!", "success");
     }
 
@@ -904,13 +842,14 @@
         if (s1 === s2) return 1.0;
         if (s1.includes(s2) || s2.includes(s1)) return 0.95;
 
-        // Group related semantic intents (Vietnamese SEO synonym groups)
+        // Group related semantic intents (Vietnamese SEO synonym groups) - ENHANCED with FAQs & Ask/Answer
         const categories = [
             { keys: ["khai niem", "la gi", "dinh nghia", "the nao la", "y nghia la gi", "what is"], tag: "definition" },
             { keys: ["quy trinh", "cac buoc", "huong dan", "bi quyet", "cach viet", "trien khai", "cach lam", "lam sao", "lam the nao"], tag: "process" },
             { keys: ["tai sao", "loi ich", "vai tro", "y nghia", "tam quan trong", "tai sao phai"], tag: "importance" },
             { keys: ["do luong", "danh gia", "kiem tra", "audit", "check"], tag: "measurement" },
-            { keys: ["tieu chi", "tieu chuan", "checklist", "yeu cau", "luu y", "nguyen tac"], tag: "criteria" }
+            { keys: ["tieu chi", "tieu chuan", "checklist", "yeu cau", "luu y", "nguyen tac"], tag: "criteria" },
+            { keys: ["giai dap thac mac", "faq", "faqs", "cau hoi thuong gap", "hoi dap", "thac mac thuong gap", "cau hoi pho bien", "giai dap", "giai thich", "thac mac", "cau hoi"], tag: "faq" }
         ];
 
         let cat1 = null;
@@ -955,49 +894,124 @@
         return jaccard;
     }
 
-    // Trigger visual toast
-    function showToast(title, message, type = "info") {
-        const toast = document.getElementById('toastBox');
-        const tTitle = document.getElementById('toastTitle');
-        const tMsg = document.getElementById('toastMessage');
-        const tIcon = document.getElementById('toastIcon');
+    // Save and Render Audit Session History in localStorage
+    function saveCurrentAuditSnapshot() {
+        const titleVal = document.getElementById('seoTitle').value.trim();
+        const pKeyword = document.getElementById('parentKeyword').value.trim();
+        const subKeywordsVal = document.getElementById('subKeywords').value.trim();
+        const metaDescVal = document.getElementById('metaDesc').value.trim();
+        const editorContent = document.getElementById('articleBody').innerHTML;
 
-        tTitle.innerText = title;
-        tMsg.innerText = message;
-
-        if (type === "success") {
-            tIcon.className = "p-1.5 bg-emerald-600 rounded-lg text-sm text-white";
-            tIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
-        } else if (type === "warning") {
-            tIcon.className = "p-1.5 bg-amber-500 rounded-lg text-sm text-slate-900";
-            tIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
-        } else {
-            tIcon.className = "p-1.5 bg-blue-600 rounded-lg text-sm text-white";
-            tIcon.innerHTML = `<i class="fa-solid fa-info"></i>`;
+        if (!titleVal || !pKeyword) {
+            showToast("Không thể lưu", "Vui lòng nhập tối thiểu Từ khóa chính và Tiêu đề bài viết để lưu lịch sử.", "warning");
+            return;
         }
 
-        toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 max-w-sm bg-slate-900 text-white p-4 rounded-xl shadow-2xl flex items-center gap-3";
+        let history = JSON.parse(localStorage.getItem('seo_audit_history') || '[]');
+        const timeNow = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const dateNow = new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
         
-        setTimeout(() => {
-            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 max-w-sm bg-slate-900 text-white p-4 rounded-xl shadow-2xl flex items-center gap-3";
-        }, 4000);
+        // Comprehensive snapshot payload
+        const snapshot = {
+            id: Date.now(),
+            score: currentCalculatedScore,
+            title: titleVal,
+            keyword: pKeyword,
+            subKeywords: subKeywordsVal,
+            metaDesc: metaDescVal,
+            content: editorContent,
+            timestamp: `${timeNow} ngày ${dateNow}`
+        };
+
+        history.unshift(snapshot);
+        if (history.length > 5) {
+            history = history.slice(0, 5);
+        }
+
+        localStorage.setItem('seo_audit_history', JSON.stringify(history));
+        renderAuditHistory();
+        showToast("Đã lưu lịch sử", `Phiên bản đạt ${currentCalculatedScore}% đã được lưu trữ thành công.`, "success");
     }
 
-    function runSEOAudit() {
+    // Restore full state from clicked history item
+    function restoreAuditSnapshot(id) {
+        const history = JSON.parse(localStorage.getItem('seo_audit_history') || '[]');
+        const target = history.find(item => item.id === id);
+
+        if (!target) {
+            showToast("Lỗi", "Không thể tìm thấy bản ghi khôi phục tương ứng.", "warning");
+            return;
+        }
+
+        // Apply snapshot inputs
+        document.getElementById('parentKeyword').value = target.keyword || '';
+        document.getElementById('subKeywords').value = target.subKeywords || '';
+        document.getElementById('seoTitle').value = target.title || '';
+        document.getElementById('metaDesc').value = target.metaDesc || '';
+        document.getElementById('articleBody').innerHTML = target.content || '';
+
+        // Re-calculate counters and triggers
+        updateCounters();
+        runSEOAudit(true); // Silent re-evaluation
+
+        showToast("Đã khôi phục", `Khôi phục thành công về phiên bản có số điểm ${target.score}%!`, "success");
+    }
+
+    function renderAuditHistory() {
+        const historyList = document.getElementById('historyList');
+        if (!historyList) return;
+
+        const history = JSON.parse(localStorage.getItem('seo_audit_history') || '[]');
+        if (history.length === 0) {
+            historyList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-2">Chưa có bản lưu phân tích nào.</p>`;
+            return;
+        }
+
+        historyList.innerHTML = history.map(item => {
+            let badgeClass = "bg-red-100 text-red-700 border-red-200";
+            if (item.score >= 90) badgeClass = "bg-emerald-100 text-emerald-700 border-emerald-200";
+            else if (item.score >= 70) badgeClass = "bg-blue-100 text-blue-700 border-blue-200";
+            else if (item.score >= 50) badgeClass = "bg-amber-100 text-amber-700 border-amber-200";
+
+            return `
+                <div onclick="restoreAuditSnapshot(${item.id})" class="group flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs hover:bg-blue-50/50 hover:border-blue-300 transition-all duration-150 cursor-pointer relative overflow-hidden">
+                    <div class="truncate pr-4 flex-grow">
+                        <p class="font-bold text-slate-800 truncate group-hover:text-blue-700 transition-colors" title="${item.title}">${item.title}</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-clock"></i> ${item.timestamp} | <span class="font-medium text-slate-500">KW: ${item.keyword}</span></p>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="px-2 py-0.5 rounded-md text-xs font-black border ${badgeClass}">${item.score}%</span>
+                        <span class="text-slate-400 group-hover:text-blue-600 transition-colors" title="Nhấp để khôi phục bài viết"><i class="fa-solid fa-rotate-left"></i></span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function clearAuditHistory() {
+        localStorage.removeItem('seo_audit_history');
+        renderAuditHistory();
+        showToast("Đã dọn dẹp", "Lịch sử lưu trữ phân tích đã được xóa hoàn toàn.", "success");
+    }
+
+    // Realtime analysis support
+    function runRealtimeAudit() {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            runSEOAudit(true);
+        }, 300);
+    }
+
+    function runSEOAudit(isSilent = false) {
         const pKeyword = document.getElementById('parentKeyword').value.trim();
         const subKeywordsRaw = document.getElementById('subKeywords').value;
         const subKws = subKeywordsRaw.split(',').map(k => k.trim()).filter(k => k.length > 0);
         
         if (!pKeyword) {
-            showToast("Thiếu dữ liệu", "Vui lòng nhập Parent Keyword để bắt đầu phân tích!", "warning");
-            document.getElementById('parentKeyword').focus();
-            return;
-        }
-
-        const docFilename = document.getElementById('docFilename').value.trim();
-        if (!docFilename) {
-            showToast("Thiếu tên File Doc", "Vui lòng đặt tên file Doc lưu trữ để kiểm định!", "warning");
-            document.getElementById('docFilename').focus();
+            if (!isSilent) {
+                showToast("Thiếu dữ liệu", "Vui lòng nhập Parent Keyword để bắt đầu phân tích!", "warning");
+                document.getElementById('parentKeyword').focus();
+            }
             return;
         }
 
@@ -1006,38 +1020,85 @@
         const editor = document.getElementById('articleBody');
         const plainText = editor.innerText || editor.textContent;
 
-        if (!seoTitle || plainText.trim().length < 50) {
-            showToast("Nội dung trống", "Hãy chắc chắn rằng bạn đã điền cả Tiêu đề và nội dung bài viết.", "warning");
+        if (!seoTitle || plainText.trim().length < 10) {
             return;
         }
 
         let totalScorePoints = 0;
         const maxScorePoints = 100;
 
-        // Auditing sections
-        const titleResults = auditTitle(seoTitle, pKeyword);
+        // Auditing sections (Updated Weight: Title/Meta/H1 - 30%, Content/EEAT/Density - 60%, Outline - 10%)
+        const titleResults = auditTitle(seoTitle, pKeyword, editor);
         const metaResults = auditMeta(metaDesc, pKeyword, subKws);
-        const fileResults = auditFilename(docFilename, pKeyword);
         const contentResults = auditContentAndEEAT(editor, pKeyword, subKws);
-        const imageResults = auditImages(editor, pKeyword);
         const outlineResults = auditOutlineStructure();
 
         // Sum Scores (Weighted)
-        totalScorePoints += titleResults.score;    // Max 15
-        totalScorePoints += metaResults.score;     // Max 15
-        totalScorePoints += fileResults.score;     // Max 5
-        totalScorePoints += contentResults.score;  // Max 35
-        totalScorePoints += imageResults.score;    // Max 20
-        totalScorePoints += outlineResults.score;  // Max 10
+        totalScorePoints += titleResults.score;    // Max 15 (SEO Title & H1)
+        totalScorePoints += metaResults.score;     // Max 15 (Meta Description)
+        totalScorePoints += contentResults.score;  // Max 60 (Wordcount, Keywords, Density, EEAT, Sentences)
+        totalScorePoints += outlineResults.score;  // Max 10 (Outline)
 
         const finalScore = Math.min(100, Math.round((totalScorePoints / maxScorePoints) * 100));
+        currentCalculatedScore = finalScore;
         renderScoreGauge(finalScore);
 
-        renderMetaReport(titleResults, metaResults, fileResults);
+        renderMetaReport(titleResults, metaResults);
         renderContentReport(contentResults);
-        renderImageReport(imageResults);
 
-        showToast("Phân tích xong!", `Chất lượng tối ưu hóa bài viết đạt: ${finalScore}%!`, "success");
+        // Render Keyword Density Progress Bars & Warnings
+        renderDensityBars(plainText, pKeyword, subKws);
+
+        if (!isSilent) {
+            showToast("Phân tích xong!", `Chất lượng tối ưu hóa bài viết đạt: ${finalScore}%!`, "success");
+        }
+    }
+
+    function renderDensityBars(text, pKeyword, subKws) {
+        const container = document.getElementById('densityReportList');
+        if (!container) return;
+
+        const parentDensity = getKeywordDensity(text, pKeyword);
+        let densityHTML = `
+            <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                    <span class="font-semibold text-slate-800">Từ khóa chính: "${pKeyword}"</span>
+                    <span class="font-bold">${parentDensity.density}% (${parentDensity.count} lần)</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-300 ${
+                        parentDensity.density > 4 ? 'bg-red-500 animate-pulse' :
+                        (parentDensity.density >= 1.5 && parentDensity.density <= 3) ? 'bg-emerald-500' : 'bg-amber-500'
+                    }" style="width: ${Math.min(100, parentDensity.density * 25)}%"></div>
+                </div>
+                <p class="text-[10px] mt-0.5">
+                    ${parentDensity.density > 4 ? '<span class="text-red-600 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Nhồi nhét từ khóa! (>4% cần tinh giảm gấp)</span>' : 
+                      (parentDensity.density >= 1.5 && parentDensity.density <= 3) ? '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Mật độ cực kỳ lý tưởng (1.5% - 3%)</span>' : 
+                      '<span class="text-amber-600 font-semibold"><i class="fa-solid fa-circle-info"></i> Chưa đạt chuẩn mật độ khuyến nghị (1.5% - 3%)</span>'}
+                </p>
+            </div>
+        `;
+
+        if (subKws.length > 0) {
+            densityHTML += `<div class="border-t border-slate-200 my-2 pt-2 space-y-2">`;
+            subKws.forEach(sub => {
+                const subDensity = getKeywordDensity(text, sub);
+                densityHTML += `
+                    <div class="space-y-0.5">
+                        <div class="flex justify-between text-[11px] text-slate-600">
+                            <span>Từ khóa phụ: "${sub}"</span>
+                            <span class="font-semibold">${subDensity.density}% (${subDensity.count} lần)</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
+                            <div class="bg-blue-500 h-full rounded-full" style="width: ${Math.min(100, subDensity.density * 30)}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            densityHTML += `</div>`;
+        }
+
+        container.innerHTML = densityHTML;
     }
 
     function renderScoreGauge(score) {
@@ -1074,7 +1135,7 @@
         }
     }
 
-    function auditTitle(title, pKeyword) {
+    function auditTitle(title, pKeyword, editorNode) {
         let score = 0;
         const checks = [];
         
@@ -1086,7 +1147,7 @@
             status: isWordLengthGood ? 'pass' : 'warning',
             help: "Tiêu đề nằm trong phạm vi 8 đến 12 từ sẽ thúc đẩy cảm xúc người dùng nhấp chuột và giúp hiển thị trọn vẹn nhất."
         });
-        if (isWordLengthGood) score += 4;
+        if (isWordLengthGood) score += 2;
 
         const length = title.length;
         const isCharLengthGood = length <= 70;
@@ -1096,25 +1157,60 @@
             status: isCharLengthGood ? 'pass' : 'fail',
             help: "Vượt quá 70 ký tự sẽ khiến công cụ tìm kiếm của Google cắt bớt tiêu đề bằng dấu ba chấm."
         });
-        if (isCharLengthGood) score += 4;
+        if (isCharLengthGood) score += 2;
 
         const containsKeyword = removeAccents(title).includes(removeAccents(pKeyword));
         checks.push({
-            name: "Chứa Parent Keyword (Từ khóa chính)",
+            name: "Tiêu đề chứa Parent Keyword (Từ khóa chính)",
             desc: containsKeyword ? `Đã phát hiện từ khóa chính trong tiêu đề.` : `Không có từ khóa "${pKeyword}" trong tiêu đề.`,
             status: containsKeyword ? 'pass' : 'fail',
             help: "Bắt buộc phải lồng ghép từ khóa chính không dấu hoặc có dấu một cách tự nhiên vào tiêu đề bài viết."
         });
-        if (containsKeyword) score += 4;
+        if (containsKeyword) score += 2;
 
         const isLeft = removeAccents(title).indexOf(removeAccents(pKeyword)) < 15;
         checks.push({
-            name: "Ưu tiên từ khóa chính nằm ở đầu bên trái",
+            name: "Ưu tiên từ khóa chính nằm ở đầu bên trái của Tiêu đề",
             desc: containsKeyword && isLeft ? "Từ khóa chính xuất hiện sớm tại góc ưu tiên bên trái." : "Từ khóa nằm quá xa phía bên phải hoặc chưa được điền.",
             status: containsKeyword && isLeft ? 'pass' : 'warning',
             help: "Hãy tìm cách đảo vị trí từ khóa chính lên trước 15-20 ký tự đầu tiên để tăng độ liên quan Onpage mạnh nhất."
         });
-        if (containsKeyword && isLeft) score += 3;
+        if (containsKeyword && isLeft) score += 2;
+
+        // Advanced H1 audit
+        const h1s = editorNode.querySelectorAll('h1');
+        const isSingleH1 = h1s.length === 1;
+        checks.push({
+            name: "Số lượng thẻ H1 trong bài viết (Duy nhất 1 H1)",
+            desc: h1s.length === 0 ? "Không tìm thấy thẻ H1 nào trong nội dung soạn thảo." : (h1s.length === 1 ? "Đã phát hiện duy nhất 1 thẻ H1 chuẩn SEO." : `Có tới ${h1s.length} thẻ H1. Chỉ nên có duy nhất 1 thẻ H1 để làm tiêu đề chính.`),
+            status: isSingleH1 ? 'pass' : (h1s.length > 1 ? 'fail' : 'warning'),
+            help: "Mỗi trang web chỉ được phép có duy nhất một thẻ H1 duy nhất đại diện cho chủ đề lớn của toàn bộ bài viết."
+        });
+        if (isSingleH1) score += 3;
+
+        let h1ContainsKeyword = false;
+        if (isSingleH1) {
+            h1ContainsKeyword = removeAccents(h1s[0].innerText).includes(removeAccents(pKeyword));
+        }
+        checks.push({
+            name: "Thẻ H1 chứa Parent Keyword (Từ khóa chính)",
+            desc: h1ContainsKeyword ? "Đã tìm thấy từ khóa chính trong tiêu đề chính H1." : (h1s.length === 1 ? `Không tìm thấy từ khóa "${pKeyword}" trong thẻ H1.` : "Chưa thể xác định do cấu trúc H1 không hợp lệ."),
+            status: h1ContainsKeyword ? 'pass' : 'warning',
+            help: "Tiêu đề chính H1 cần được khéo léo lồng ghép từ khóa chính nhằm tăng độ mạnh tối ưu On-page."
+        });
+        if (h1ContainsKeyword) score += 2;
+
+        let isH1DiffFromTitle = false;
+        if (isSingleH1) {
+            isH1DiffFromTitle = h1s[0].innerText.trim().toLowerCase() !== title.toLowerCase();
+        }
+        checks.push({
+            name: "Thẻ H1 khác biệt với SEO Title",
+            desc: isH1DiffFromTitle ? "Tuyệt vời! Tiêu đề H1 và SEO Title đã được viết khác nhau để tránh trùng lặp cấu trúc." : (h1s.length === 1 ? "Tiêu đề H1 đang trùng lặp hoàn toàn với SEO Title." : "Chưa thể kiểm định do cấu trúc H1 không hợp lệ."),
+            status: isH1DiffFromTitle ? 'pass' : 'warning',
+            help: "H1 và SEO Title nên viết biến thể một chút để gia tăng bao phủ đa dạng ý định tìm kiếm hơn."
+        });
+        if (isH1DiffFromTitle) score += 2;
 
         return { score, checks };
     }
@@ -1143,11 +1239,18 @@
         });
         if (containsKeyword && isLeft) score += 4;
 
-        const ctas = ["click", "xem ngay", "doc ngay", "tim hieu", "kham pha", "ngay", "bam vao", "so huu", "bi quyet"];
+        // Expanded CTA list with accentless normalized variants
+        const ctas = [
+            "xem ngay", "tim hieu them", "tim hieu", "kham pha", "bat dau", "thu ngay", "truy cap", 
+            "xem chi tiet", "xem them", "doc them", "tiep tuc", "tham gia", "dang ky", "dang nhap", 
+            "lien he", "nhan ngay", "tai ngay", "mua ngay", "dat ngay", "dung thu", "kham pha ngay", 
+            "xem tat ca", "tim kiem", "so sanh", "kiem tra", "trai nghiem", "tu van ngay", "ket noi", 
+            "gui yeu cau", "tao tai khoan", "bat dau ngay", "click", "bam vao", "doc ngay", "so huu", "bi quyet"
+        ];
         const hasCTA = ctas.some(cta => removeAccents(meta).includes(cta));
         checks.push({
             name: "Yếu tố kêu gọi hành động kích thích nhấp chuột (CTA)",
-            desc: hasCTA ? "Đã sử dụng tốt động từ thúc đẩy hành vi." : "Thiếu các cụm từ kêu gọi nhấp chuột: xem ngay, bấm vào, khám phá...",
+            desc: hasCTA ? "Đã sử dụng tốt động từ thúc đẩy hành vi." : "Thiếu các cụm từ kêu gọi nhấp chuột (ví dụ: xem ngay, tìm hiểu thêm, bắt đầu ngay, xem chi tiết...).",
             status: hasCTA ? 'pass' : 'warning',
             help: "Bổ sung CTA trực tiếp nâng tầm đáng kể tỷ lệ Click-Through-Rate (CTR) tự nhiên."
         });
@@ -1168,31 +1271,13 @@
         return { score, checks };
     }
 
-    function auditFilename(filename, pKeyword) {
-        let score = 0;
-        const checks = [];
-        const fileNorm = removeAccents(filename).replace(/[\s-]/g, '');
-        const kwNorm = removeAccents(pKeyword).replace(/[\s-]/g, '');
-        const isMatched = fileNorm === kwNorm && filename.trim() !== '';
-
-        checks.push({
-            name: "Kiểm tra tên File Doc lưu trữ",
-            desc: isMatched ? `Tên File trùng khớp hoàn hảo với Parent Keyword.` : `Tên file "${filename}" chưa khớp chuẩn với Parent Keyword "${pKeyword}".`,
-            status: isMatched ? 'pass' : 'fail',
-            help: "Tên File lưu trữ nội bộ của bài viết bắt buộc phải đặt trùng khớp hoàn toàn với Parent Keyword để đảm bảo tính thống nhất."
-        });
-        if (isMatched) score += 5;
-
-        return { score, checks };
-    }
-
     function auditContentAndEEAT(editorNode, pKeyword, subKws) {
         let score = 0;
         const checks = [];
 
         const plainText = editorNode.innerText || editorNode.textContent;
         const words = plainText.trim() === '' ? 0 : plainText.trim().split(/\s+/).length;
-        const targetWords = parseInt(document.getElementById('targetWordCount').value) || 1000;
+        const targetWords = 1000; // Baseline 1000 words
         
         const isWordcountSuccess = words >= targetWords;
         checks.push({
@@ -1201,7 +1286,7 @@
             status: isWordcountSuccess ? 'pass' : 'warning',
             help: "Bài viết cần đạt lượng chữ tối thiểu để đủ chiều sâu và khả năng phân tích chi tiết so với các đối thủ."
         });
-        if (isWordcountSuccess) score += 4;
+        if (isWordcountSuccess) score += 10;
 
         // Robust Intro Extraction
         const introText = getIntroParagraphs(editorNode);
@@ -1214,7 +1299,7 @@
             status: isIntroLenGood ? 'pass' : 'warning',
             help: "Đoạn mở bài lý tưởng cần đi thẳng vào trọng tâm, giới thiệu thông điệp của bài viết để kích thích tò mò."
         });
-        if (isIntroLenGood) score += 4;
+        if (isIntroLenGood) score += 5;
 
         // Checking keyword in the first 100 words of the intro with normalized word separation
         const normalizedIntro = removeAccents(introText);
@@ -1228,7 +1313,7 @@
             status: isKeywordInIntro ? 'pass' : 'fail',
             help: "Đưa từ khóa chính lên sớm giúp các thuật toán bot định vị ngữ nghĩa nội dung nhanh hơn."
         });
-        if (isKeywordInIntro) score += 4;
+        if (isKeywordInIntro) score += 6;
 
         // Checking keyword in conclusion (last paragraph)
         const paragraphs = getContentParagraphs(editorNode);
@@ -1240,7 +1325,19 @@
             status: isKeywordInConclusion ? 'pass' : 'warning',
             help: "Củng cố tính nhất quán bằng cách nhắc lại từ khóa chính ở chương kết luận."
         });
-        if (isKeywordInConclusion) score += 4;
+        if (isKeywordInConclusion) score += 6;
+
+        // Keyword Density scoring implementation
+        const pDensityObj = getKeywordDensity(plainText, pKeyword);
+        const isDensityOptimal = pDensityObj.density >= 1.5 && pDensityObj.density <= 3.0;
+        const isStuffing = pDensityObj.density > 4.0;
+        checks.push({
+            name: "Mật độ Parent Keyword trong toàn bài lý tưởng (1.5% - 3%)",
+            desc: `Mật độ từ khóa hiện tại: ${pDensityObj.density}% (${pDensityObj.count} lần xuất hiện).`,
+            status: isDensityOptimal ? 'pass' : (isStuffing ? 'fail' : 'warning'),
+            help: "Tránh nhồi nhét quá 4% để tránh nhận án phạt từ thuật toán rác (keyword stuffing) của Google."
+        });
+        if (isDensityOptimal) score += 5;
 
         // Experiential / EEAT triggers
         const eeatExpertWords = ["chuyen gia", "bang cap", "chung nhan", "nghien cuu", "tac gia", "kinh nghiem", "duc ket", "thuc te", "thuc tien", "kiem chung"];
@@ -1252,7 +1349,7 @@
             status: isEeatPassed ? 'pass' : 'warning',
             help: "Google đánh giá rất cao các chia sẻ từ trải nghiệm thực tế hoặc ý kiến từ chuyên gia có bằng cấp, trình độ rõ ràng."
         });
-        if (isEeatPassed) score += 5;
+        if (isEeatPassed) score += 10;
 
         const boldTags = editorNode.querySelectorAll('strong, b');
         const hasBoldText = boldTags.length > 0;
@@ -1262,7 +1359,7 @@
             status: hasBoldText ? 'pass' : 'warning',
             help: "In đậm từ khóa chính, từ khóa phụ giúp tạo điểm nhấn hỗ trợ người đọc quét thông tin hiệu quả hơn."
         });
-        if (hasBoldText) score += 4;
+        if (hasBoldText) score += 5;
 
         const lists = editorNode.querySelectorAll('ul, ol');
         const hasLists = lists.length > 0;
@@ -1272,19 +1369,58 @@
             status: hasLists ? 'pass' : 'warning',
             help: "Sử dụng list giúp bóc tách ý chính, tăng trải nghiệm đọc và có cơ hội lọt Top Featured Snippet tốt hơn."
         });
-        if (hasLists) score += 4;
+        if (hasLists) score += 5;
+
+        // Check if each segment under Heading 2 / Heading 3 contains optimal sentences (3-5 sentences)
+        let sentenceCountPerHeadingPass = true;
+        let headingViolations = [];
+        
+        const headingBlocks = [];
+        let currentHeading = "Mở bài (Intro)";
+        let currentText = "";
+        
+        let nodeIter = editorNode.firstElementChild;
+        while (nodeIter) {
+            if (nodeIter.tagName === 'H2' || nodeIter.tagName === 'H3') {
+                if (currentText.trim().length > 0) {
+                    headingBlocks.push({ heading: currentHeading, text: currentText });
+                }
+                currentHeading = nodeIter.innerText.trim();
+                currentText = "";
+            } else {
+                currentText += " " + nodeIter.innerText;
+            }
+            nodeIter = nodeIter.nextElementSibling;
+        }
+        if (currentText.trim().length > 0) {
+            headingBlocks.push({ heading: currentHeading, text: currentText });
+        }
+
+        headingBlocks.forEach(block => {
+            const sentences = block.text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 4);
+            const sentenceCount = sentences.length;
+            if (sentenceCount < 3 || sentenceCount > 5) {
+                sentenceCountPerHeadingPass = false;
+                headingViolations.push(`"${block.heading}" (${sentenceCount} câu)`);
+            }
+        });
+
+        checks.push({
+            name: "Độ phân bổ câu tối ưu (Mỗi Heading gồm 3 - 5 câu văn)",
+            desc: sentenceCountPerHeadingPass 
+                ? "Tất cả các phần dưới Heading đều đạt chuẩn độ phân bổ câu tối ưu (3 - 5 câu)." 
+                : `Phát hiện phần chưa đạt chuẩn: ${headingViolations.join(', ')}. Hãy tinh chỉnh các vùng này để đảm bảo có 3 đến 5 câu văn dưới mỗi Heading.`,
+            status: sentenceCountPerHeadingPass ? 'pass' : 'warning',
+            help: "Duy trì từ 3 đến 5 câu văn dưới mỗi tiêu đề Heading giúp người đọc tiếp nhận thông tin dễ dàng và khoa học nhất."
+        });
+        if (sentenceCountPerHeadingPass) score += 4;
 
         let paragraphLengthPass = true;
-        let sentenceCountPerParaPass = true;
-
         paragraphs.forEach(p => {
             const text = p.innerText.trim();
             if (text.length > 20) {
                 const pWords = text.split(/\s+/).length;
                 if (pWords > 250) paragraphLengthPass = false;
-
-                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 3);
-                if (sentences.length < 3 || sentences.length > 6) sentenceCountPerParaPass = false;
             }
         });
 
@@ -1295,14 +1431,6 @@
             help: "Giữ các đoạn văn ngắn gọn giúp mạch bài trôi chảy, kích thích người đọc cuộn tiếp trang."
         });
         if (paragraphLengthPass) score += 3;
-
-        checks.push({
-            name: "Độ phân bổ câu tối ưu (Mỗi đoạn gồm 3 - 5 câu văn)",
-            desc: sentenceCountPerParaPass ? "Các đoạn phân tách câu chữ đúng tỷ lệ 3-5 câu." : "Một số đoạn quá ngắn (1-2 câu) hoặc quá lê thê (trên 6 câu).",
-            status: sentenceCountPerParaPass ? 'pass' : 'warning',
-            help: "Khoảng 3-5 câu mỗi đoạn là tỷ lệ cân bằng nhất để vừa chuyển tải đầy đủ thông điệp vừa thông thoáng."
-        });
-        if (sentenceCountPerParaPass) score += 3;
 
         const correctPronouns = ["ban", "khach hang", "nguoi dung"];
         const hasCorrectPronoun = correctPronouns.some(p => removeAccents(plainText).includes(p));
@@ -1315,109 +1443,6 @@
         if (hasCorrectPronoun) score += 1;
 
         return { score, checks, words, paragraphs };
-    }
-
-    function auditImages(editorNode, pKeyword) {
-        let score = 0;
-        const checks = [];
-
-        const images = editorNode.querySelectorAll('img');
-        const imgCount = images.length;
-
-        // Verify: 1 image per Heading 2 section
-        const h2Elements = editorNode.querySelectorAll('h2');
-        let h2WithImageCount = 0;
-        let h2Total = h2Elements.length;
-
-        h2Elements.forEach((h2, index) => {
-            let hasImg = false;
-            let nextSibling = h2.nextElementSibling;
-            const nextH2 = h2Elements[index + 1];
-
-            if (h2.querySelector('img')) {
-                hasImg = true;
-            }
-
-            while (nextSibling && nextSibling !== nextH2) {
-                if (nextSibling.tagName === 'IMG' || nextSibling.querySelector('img')) {
-                    hasImg = true;
-                    break;
-                }
-                nextSibling = nextSibling.nextElementSibling;
-            }
-
-            if (hasImg) {
-                h2WithImageCount++;
-            }
-        });
-
-        const isDensityOk = h2Total === 0 || h2WithImageCount === h2Total;
-        checks.push({
-            name: "Mật độ hình ảnh tối ưu (1 Heading 2 ít nhất 1 ảnh)",
-            desc: h2Total === 0 ? "Bài viết chưa có thẻ Heading 2 để đối chiếu hình ảnh." : `Có ${h2WithImageCount}/${h2Total} thẻ H2 có chứa ít nhất 1 hình ảnh đi kèm dưới nó.`,
-            status: isDensityOk ? 'pass' : 'warning',
-            help: "Mỗi phần nội dung lớn bắt đầu bằng Heading 2 cần có ít nhất một hình ảnh minh họa để tăng trải nghiệm trực quan cho người đọc."
-        });
-        if (isDensityOk && h2Total > 0) score += 8;
-
-        // Caption validation
-        let captionCheck = true;
-        if (imgCount > 0) {
-            images.forEach(img => {
-                let captionText = "";
-                const parent = img.parentElement;
-                const nextEl = parent.querySelector('.img-caption') || img.nextElementSibling;
-                
-                if (nextEl) {
-                    captionText = nextEl.innerText.trim();
-                } else if (img.getAttribute('data-caption')) {
-                    captionText = img.getAttribute('data-caption');
-                }
-
-                if (captionText.length < 5) {
-                    captionCheck = false;
-                }
-            });
-        }
-
-        checks.push({
-            name: "Mỗi bức hình đều đi kèm Caption (chú thích rõ ràng)",
-            desc: imgCount > 0 ? (captionCheck ? "Tất cả các hình ảnh đều có mô tả đi kèm." : "Phát hiện có ảnh bị thiếu chú thích.") : "Chưa chèn ảnh.",
-            status: imgCount > 0 && captionCheck ? 'pass' : 'fail',
-            help: "Caption hình ảnh cần đặt ngay dưới bức hình diễn giải tương thích với ngữ cảnh đoạn văn kề bên."
-        });
-        if (imgCount > 0 && captionCheck) score += 6;
-
-        // Validating SEO filenames (No accents OR lowercase OR spaced)
-        let filenameFormatsPass = true;
-
-        if (imgCount > 0) {
-            images.forEach(img => {
-                const rawName = img.getAttribute('data-filename') || '';
-                if (rawName) {
-                    const isNoAccents = rawName === removeAccents(rawName);
-                    const isLowercase = rawName === rawName.toLowerCase();
-                    const hasSpaces = rawName.includes(' ') || rawName.includes('-');
-
-                    const isValidFormat = isNoAccents || isLowercase || hasSpaces;
-                    if (!isValidFormat) {
-                        filenameFormatsPass = false;
-                    }
-                } else {
-                    filenameFormatsPass = false;
-                }
-            });
-        }
-
-        checks.push({
-            name: "Tên File ảnh đúng định dạng SEO (Không dấu hoặc viết thường hoặc phân tách bằng dấu cách)",
-            desc: imgCount > 0 ? (filenameFormatsPass ? "Các tên file hình ảnh đều đúng chuẩn kỹ thuật SEO On-page." : "Một số tên file chưa cấu hình chuẩn hoặc sai quy tắc tối ưu.") : "Chưa có ảnh.",
-            status: imgCount > 0 && filenameFormatsPass ? 'pass' : 'warning',
-            help: "Tên file nên để dạng chữ không dấu, viết thường, hoặc phân tách rõ rệt bằng khoảng trắng để bot dễ phân loại ngữ nghĩa."
-        });
-        if (imgCount > 0 && filenameFormatsPass) score += 6;
-
-        return { score, checks, imgCount, h2WithImageCount, h2Total };
     }
 
     function auditOutlineStructure() {
@@ -1560,11 +1585,11 @@
         document.getElementById('outlineMatchScore').innerText = `Bao phủ H2: ${percent}%`;
     }
 
-    function renderMetaReport(titleRes, metaRes, fileRes) {
+    function renderMetaReport(titleRes, metaRes) {
         const list = document.getElementById('metaChecklist');
         list.innerHTML = '';
 
-        const allChecks = [...titleRes.checks, ...metaRes.checks, ...fileRes.checks];
+        const allChecks = [...titleRes.checks, ...metaRes.checks];
 
         allChecks.forEach(check => {
             let statusIcon = '';
@@ -1637,44 +1662,11 @@
         });
     }
 
-    function renderImageReport(imgRes) {
-        const list = document.getElementById('imageChecklist');
-        list.innerHTML = '';
-
-        document.getElementById('imgCheckCount').innerText = imgRes.imgCount;
-        document.getElementById('wordsPerImgCount').innerText = imgRes.h2Total === 0 ? "0 thẻ H2" : `${imgRes.h2WithImageCount} / ${imgRes.h2Total} H2 đạt chuẩn`;
-
-        imgRes.checks.forEach(check => {
-            let statusIcon = '';
-            let borderClass = '';
-
-            if (check.status === 'pass') {
-                statusIcon = '<span class="text-emerald-500 text-lg"><i class="fa-solid fa-circle-check"></i></span>';
-                borderClass = 'border-emerald-100 bg-emerald-50/20';
-            } else if (check.status === 'warning') {
-                statusIcon = '<span class="text-amber-500 text-lg"><i class="fa-solid fa-triangle-exclamation"></i></span>';
-                borderClass = 'border-amber-100 bg-amber-50/20';
-            } else {
-                statusIcon = '<span class="text-red-500 text-lg"><i class="fa-solid fa-circle-xmark"></i></span>';
-                borderClass = 'border-red-100 bg-red-50/20';
-            }
-
-            list.innerHTML += `
-                <div class="p-3 border rounded-xl flex items-start gap-3 transition-all ${borderClass}">
-                    ${statusIcon}
-                    <div class="flex-grow">
-                        <h4 class="text-xs font-bold text-slate-900">${check.name}</h4>
-                        <p class="text-[11px] text-slate-600 mt-0.5">${check.desc}</p>
-                        <p class="text-[10px] text-slate-400 italic mt-1 bg-white/60 p-1.5 rounded border border-slate-100/50">${check.help}</p>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
     // Initialize content load event
     window.onload = function() {
         updateCounters();
+        runRealtimeAudit();
+        renderAuditHistory();
     }
 </script>
 </body>
