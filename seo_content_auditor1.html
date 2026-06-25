@@ -418,7 +418,7 @@
                             <div class="p-2.5 bg-blue-50 border border-blue-200 rounded-xl">
                                 <div class="text-base mb-1">🔵</div>
                                 <div class="font-bold text-blue-700">Gemini</div>
-                                <div class="text-blue-400 mt-0.5 font-mono">AIzaSy...</div>
+                                <div class="text-blue-400 mt-0.5 font-mono">AIzaSy... / AQ...</div>
                             </div>
                             <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
                                 <div class="text-base mb-1">🟢</div>
@@ -435,7 +435,7 @@
                             </div>
                             <div class="relative">
                                 <input type="password" id="aiApiKeyInput"
-                                    placeholder="sk-ant-...  /  AIzaSy...  /  sk-proj-..."
+                                    placeholder="sk-ant-...  /  AIzaSy... or AQ....  /  sk-proj-..."
                                     autocomplete="off"
                                     oninput="detectProviderFromKey(this.value)"
                                     class="w-full px-3 py-2.5 pr-10 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400 focus:bg-white font-mono transition-all">
@@ -1826,7 +1826,7 @@
     // =============================================
     // AI PROVIDER — Auto-detect từ prefix của API key
     // Claude:  sk-ant-...
-    // Gemini:  AIzaSy...
+    // Gemini:  AIzaSy... (cũ) hoặc AQ.... (mới từ AI Studio)
     // OpenAI:  sk-proj-... hoặc sk-...
     // =============================================
 
@@ -1854,7 +1854,8 @@
     function detectProvider(key) {
         if (!key) return null;
         if (key.startsWith('sk-ant-')) return 'claude';
-        if (key.startsWith('AIzaSy')) return 'gemini';
+        // Gemini: cả format cũ (AIzaSy...) lẫn format mới (AQ...)
+        if (key.startsWith('AIzaSy') || key.startsWith('AQ.')) return 'gemini';
         if (key.startsWith('sk-proj-') || key.startsWith('sk-')) return 'openai';
         return null;
     }
@@ -1892,7 +1893,7 @@
         }
         const provider = detectProvider(key);
         if (!provider) {
-            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy...), ChatGPT (sk-proj-...).');
+            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy... hoặc AQ....), ChatGPT (sk-proj-...).');
             return;
         }
         showApiTestStatus('loading', `Đang kiểm tra kết nối ${PROVIDER_CONFIG[provider].name}...`);
