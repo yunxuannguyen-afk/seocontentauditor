@@ -195,72 +195,51 @@
                 <button type="button" onclick="autoGenerateSampleOutlines()" class="text-xs text-blue-600 hover:underline font-bold">Tự điền nhanh mẫu</button>
             </div>
 
-            <!-- Bookmarklet banner -->
-            <div class="mb-4 bg-violet-50 border-2 border-violet-300 rounded-xl overflow-hidden">
-                <div class="px-4 py-3 flex items-center justify-between">
-                    <p class="text-xs font-bold text-violet-900 flex items-center gap-2">
-                        <i class="fa-solid fa-spider text-violet-500"></i>
-                        Cào Outline đối thủ tự động
-                    </p>
-                    <span class="text-[10px] text-violet-500 font-medium">Setup 1 lần · dùng mãi</span>
-                </div>
-
-                <div class="px-4 pb-4 space-y-3 border-t border-violet-100 pt-3">
-                    <!-- Bước 1 -->
-                    <div class="flex items-start gap-2 text-xs text-violet-800">
-                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">1</span>
-                        <p>Nhấn <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+Shift+B</kbd> để hiện <strong>Bookmarks Bar</strong></p>
-                    </div>
-
-                    <!-- Bước 2: Nút kéo -->
-                    <div class="flex items-start gap-2 text-xs text-violet-800">
-                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">2</span>
-                        <div class="space-y-2">
-                            <p><strong>Kéo nút bên dưới</strong> lên Bookmarks Bar (giữ chuột trái → kéo lên → thả):</p>
-                            <a id="bookmarkletLink" href="#"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow cursor-grab active:cursor-grabbing select-none transition-all">
-                                🕷️ Cào SEO Outline
-                            </a>
-                            <p class="text-[10px] text-violet-400">⚠️ Kéo lên Bookmarks Bar — đừng click trực tiếp tại đây</p>
-                        </div>
-                    </div>
-
-                    <!-- Bước 3 -->
-                    <div class="flex items-start gap-2 text-xs text-violet-800">
-                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">3</span>
-                        <div class="space-y-1">
-                            <p>Mở trang đối thủ → <strong>bôi đen vùng bài viết</strong> (hoặc không cần bôi nếu trang có thẻ article/main) → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar</p>
-                            <p class="text-[10px] text-violet-500">Tool tự tìm article/main/content, nếu không có thì bôi đen trước</p>
-                        </div>
-                    </div>
-
-                    <!-- Bước 4 -->
-                    <div class="flex items-start gap-2 text-xs text-violet-800">
-                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">4</span>
-                        <p>Quay lại đây → <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+V</kbd> dán vào ô Đối thủ bên dưới</p>
-                    </div>
-                </div>
-            </div>
+            <!-- Competitor URL inputs -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Competitor 1 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-emerald-700"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
-                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp1" placeholder="Dán link bài viết đối thủ..." class="flex-1 px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white transition-all">
+                        <button onclick="fetchOutline(1)" id="btnFetch1" class="px-3 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-bolt"></i> Cào
+                        </button>
+                    </div>
+                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 2 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
-                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp2" placeholder="Dán link bài viết đối thủ..." class="flex-1 px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <button onclick="fetchOutline(2)" id="btnFetch2" class="px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-bolt"></i> Cào
+                        </button>
+                    </div>
+                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 3 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
-                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp3" placeholder="Dán link bài viết đối thủ..." class="flex-1 px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition-all">
+                        <button onclick="fetchOutline(3)" id="btnFetch3" class="px-3 py-2 text-xs font-bold text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-bolt"></i> Cào
+                        </button>
+                    </div>
+                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 4 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
-                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp4" placeholder="Dán link bài viết đối thủ..." class="flex-1 px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all">
+                        <button onclick="fetchOutline(4)" id="btnFetch4" class="px-3 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-bolt"></i> Cào
+                        </button>
+                    </div>
+                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
             </div>
         </div>
@@ -1863,43 +1842,64 @@
     }
 
 
-    // ── Bookmarklet setup ──────────────────────────────────────────────
-    function initBookmarklet() {
-        var link = document.getElementById('bookmarkletLink');
-        if (!link) return;
+    // ── Fetch Outline từ URL — dùng Jina AI + AI parse ──────────────
+    async function fetchOutline(num) {
+        var url = (document.getElementById('urlComp' + num).value || '').trim();
+        var textarea = document.getElementById('outlineComp' + num);
+        var btn = document.getElementById('btnFetch' + num);
 
-        // Bookmarklet: tự tìm article/main, fallback bôi đen
-        var code = 'javascript:(function(){'
-            + 'var s=window.getSelection();'
-            + 'var r=s&&s.rangeCount>0?s.getRangeAt(0).commonAncestorContainer:null;'
-            + 'var root=r?(r.nodeType===1?r:r.parentElement):null;'
-            + 'if(!root||root===document.body||root===document.documentElement){'
-            + 'var c=["article","main",".post-content",".entry-content",".article-body","[class*=content]","[class*=article]","[id*=content]","[id*=article]"];'
-            + 'for(var i=0;i<c.length;i++){var el=document.querySelector(c[i]);if(el&&el.querySelectorAll("h2,h3").length>0){root=el;break;}}'
-            + 'if(!root||root===document.body)root=document.body;'
-            + '}'
-            + 'var hs=root.querySelectorAll("h1,h2,h3");'
-            + 'var out="";var seen={};'
-            + 'hs.forEach(function(h){'
-            + 'var t=(h.textContent||"").replace(/\s+/g," ").trim();'
-            + 'if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+="<"+h.tagName.toLowerCase()+"> "+t+"\n";}'
-            + '});'
-            + 'if(!out){alert("Không thấy heading. Hãy bôi đen vùng bài viết rồi click lại.");return;}'
-            + 'var cnt=out.split("\n").filter(Boolean).length;'
-            + 'navigator.clipboard.writeText(out.trim()).then(function(){'
-            + 'var n=document.createElement("div");'
-            + 'n.style="position:fixed;top:16px;right:16px;z-index:9999999;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.5 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)";'
-            + 'n.innerHTML="\uD83D\uDD77\uFE0F Đã copy <b>"+cnt+"</b> headings!<br><small style=font-weight:400>Quay lại SEO Auditor → Ctrl+V dán vào ô Đối thủ</small>";'
-            + 'document.body.appendChild(n);setTimeout(function(){n.remove();},4000);'
-            + '}).catch(function(){prompt("Copy nội dung này:",out.trim());});'
-            + '})();';
+        if (!url || !url.startsWith('http')) {
+            showToast('Thiếu URL', 'Vui lòng dán link bài viết vào ô trên.', 'warning');
+            return;
+        }
 
-        link.href = code;
+        var provider = localStorage.getItem('seo_ai_provider');
+        var key = localStorage.getItem('seo_ai_key');
+        if (!key || !provider) {
+            showToast('Chưa kết nối AI', 'Vui lòng nhập API key trong tab AI Phân tích.', 'warning');
+            switchTab('ai-tab');
+            return;
+        }
 
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            showToast('⚠️ Kéo lên Bookmarks Bar', 'Giữ chuột trái vào nút → kéo lên thanh Bookmarks Bar → thả ra. Không click!', 'warning');
-        });
+        // Loading state
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        textarea.value = 'Đang tải nội dung trang...';
+
+        try {
+            // Fetch qua Jina AI Reader — trả về Markdown sạch
+            var jinaUrl = 'https://r.jina.ai/' + url;
+            var resp = await fetch(jinaUrl, {
+                signal: AbortSignal.timeout(25000),
+                headers: { 'Accept': 'text/plain,text/markdown,*/*', 'X-Return-Format': 'markdown' }
+            });
+
+            if (!resp.ok) throw new Error('Jina không tải được trang (HTTP ' + resp.status + ')');
+            var md = await resp.text();
+            if (!md || md.length < 100) throw new Error('Trang trả về nội dung rỗng');
+
+            textarea.value = 'Đã tải ' + Math.round(md.length/1024) + 'KB, AI đang phân tích...';
+
+            // Lấy 6000 ký tự đầu để gửi AI
+            var snippet = md.substring(0, 6000);
+
+            var prompt = 'Extract all H1, H2, H3 headings from the main article body in this markdown. Skip menu/nav/header/footer/sidebar/ads. Format: <h1> title, <h2> title, <h3> title. Return ONLY the list.\n\n' + snippet;
+
+            var result = await callProviderAPI(provider, key, prompt);
+            textarea.value = result.trim();
+            runRealtimeAudit();
+
+            var cnt = result.trim().split('\n').filter(Boolean).length;
+            var host = url; try { host = new URL(url).hostname; } catch(e) {}
+            showToast('Cao xong Doi thu ' + num, 'Da lay ' + cnt + ' headings tu ' + host, 'success');
+
+        } catch(err) {
+            textarea.value = '';
+            showToast('Lỗi Đối thủ ' + num, err.message, 'warning');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Cào';
+        }
     }
 
 
@@ -1909,7 +1909,6 @@
         runRealtimeAudit();
         renderAuditHistory();
         initAiPanel();
-        initBookmarklet();
     }
 
     // =============================================
