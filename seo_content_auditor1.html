@@ -212,10 +212,9 @@
                 <div class="flex items-start gap-3 text-xs text-violet-800">
                     <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
                     <div class="space-y-2 w-full">
-                        <p><strong>Kéo nút bên dưới</strong> vào thanh Bookmarks Bar. Sau đó mở trang đối thủ → click bookmarklet → <strong>di chuột hover vào vùng bài viết → click để chọn</strong> → nhấn Lấy Outline:</p>
-                        <a href="javascript:(function(){if(document.getElementById('_seo_picker'))return;var style=document.createElement('style');style.id='_seo_style';style.textContent='._seo_hover{outline:3px solid #7c3aed!important;outline-offset:2px;cursor:crosshair!important;background:rgba(124,58,237,0.07)!important;}._seo_selected{outline:3px solid #16a34a!important;background:rgba(22,163,74,0.08)!important;}#_seo_picker{position:fixed;top:16px;right:16px;z-index:2147483647;background:#1e293b;color:#fff;padding:14px 18px;border-radius:14px;font:600 13px/1.5 sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.4);min-width:260px;}#_seo_picker p{margin:0 0 8px;font-size:12px;opacity:.8;}#_seo_picker .btns{display:flex;gap:8px;}#_seo_picker button{flex:1;padding:8px;border:none;border-radius:8px;font:700 12px sans-serif;cursor:pointer;}#_seo_ok{background:#7c3aed;color:#fff;}#_seo_ok:hover{background:#6d28d9;}#_seo_cancel{background:#374151;color:#fff;}';document.head.appendChild(style);var panel=document.createElement('div');panel.id='_seo_picker';panel.innerHTML='<p>🕷️ <strong>Di chuột vào vùng bài viết</strong> rồi <strong>click để chọn</strong>. Chọn vùng bọc toàn bộ nội dung bài.</p><div class="btns"><button id="_seo_ok" disabled>✅ Lấy Outline</button><button id="_seo_cancel">✖ Huỷ</button></div>';document.body.appendChild(panel);var hovered=null,selected=null;function onMove(e){if(selected)return;var el=e.target;if(el.closest&&el.closest('#_seo_picker'))return;if(hovered&&hovered!==el)hovered.classList.remove('_seo_hover');hovered=el;el.classList.add('_seo_hover');}function onClick(e){var el=e.target;if(el.closest&&el.closest('#_seo_picker'))return;e.preventDefault();e.stopPropagation();if(selected)selected.classList.remove('_seo_selected');if(hovered)hovered.classList.remove('_seo_hover');selected=el;el.classList.add('_seo_selected');document.getElementById('_seo_ok').disabled=false;document.getElementById('_seo_ok').textContent='✅ Lấy Outline từ vùng này';panel.querySelector('p').innerHTML='<span style="color:#4ade80">✅ Đã chọn!</span> Nhấn <strong>Lấy Outline</strong> hoặc click vùng khác để đổi.';}document.addEventListener('mousemove',onMove,true);document.addEventListener('click',onClick,true);document.getElementById('_seo_ok').addEventListener('click',function(){if(!selected)return;var headings=selected.querySelectorAll('h1,h2,h3');var out='';var seen={};headings.forEach(function(h){var t=(h.textContent||'').replace(/\s+/g,' ').trim();if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}});cleanup();if(!out){alert('Không có H1/H2/H3 trong vùng này. Thử click vào phần tử cha bọc toàn bài viết.');return;}navigator.clipboard.writeText(out.trim()).then(function(){var n=document.createElement('div');n.style='position:fixed;top:16px;right:16px;z-index:2147483647;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.5 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)';n.innerHTML='🕷️ Đã copy <strong>'+out.split('\n').filter(Boolean).length+'</strong> headings!<br><small style=font-weight:400>Quay lại SEO Auditor → Ctrl+V dán vào ô Đối thủ</small>';document.body.appendChild(n);setTimeout(function(){n.remove();},4000);}).catch(function(){prompt('Copy nội dung này:',out.trim());});});document.getElementById('_seo_cancel').addEventListener('click',cleanup);function cleanup(){document.removeEventListener('mousemove',onMove,true);document.removeEventListener('click',onClick,true);if(hovered)hovered.classList.remove('_seo_hover');if(selected)selected.classList.remove('_seo_selected');var s=document.getElementById('_seo_style');var p=document.getElementById('_seo_picker');if(s)s.remove();if(p)p.remove();}})();"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow-md cursor-grab select-none transition-all"
-                            onclick="event.preventDefault(); showToast('💡 Hướng dẫn','Giữ chuột trái vào nút này → kéo lên thanh Bookmarks Bar bên trên → thả ra. Không click!','info');">
+                        <p>Kéo nút bên dưới vào thanh Bookmarks Bar. Sau đó mở trang đối thủ → click bookmarklet → <strong>di chuột hover vào vùng bài viết → click để chọn</strong> → nhấn Lấy Outline:</p>
+                        <a id="bookmarkletLink"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow-md cursor-grab select-none transition-all">
                             🕷️ Cào SEO Outline
                         </a>
                         <p class="text-[10px] text-violet-500">👆 Giữ chuột trái → kéo lên thanh bookmark → thả ra</p>
@@ -1862,33 +1861,59 @@
 
     // ── Bookmarklet setup ──────────────────────────────────────────────
     function initBookmarklet() {
-        const link = document.getElementById('bookmarkletLink');
+        var link = document.getElementById('bookmarkletLink');
         if (!link) return;
-        const code = `javascript:(function(){
-var REMOVE=['nav','header','footer','aside','script','style','noscript','.sidebar','.menu','.navigation','.breadcrumb','.widget','[role=navigation]','[role=banner]','[role=contentinfo]'];
-var wrap=document.createElement('div');
-wrap.innerHTML=document.body.innerHTML;
-REMOVE.forEach(function(s){try{wrap.querySelectorAll(s).forEach(function(e){e.remove()});}catch(e){}});
-var out='';var seen={};
-wrap.querySelectorAll('h1,h2,h3').forEach(function(h){
-var t=(h.textContent||'').replace(/\s+/g,' ').trim();
-if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}
-});
-if(!out){alert('Không tìm thấy heading H1/H2/H3 nào trong trang này!');return;}
-navigator.clipboard.writeText(out.trim()).then(function(){
-var n=document.createElement('div');
-n.style='position:fixed;top:20px;right:20px;z-index:999999;background:#3b82f6;color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:bold;font-family:sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.3)';
-n.textContent='✅ Đã copy '+out.split('\n').filter(Boolean).length+' headings! Dán vào SEO Auditor.';
-document.body.appendChild(n);setTimeout(function(){n.remove();},3000);
-}).catch(function(){
-prompt('Copy nội dung này:',out.trim());
-});
-})();`;
-        link.href = code;
-        // Ngăn click thường (chỉ dùng drag)
+
+        // Bookmarklet code — gán qua JS để tránh HTML encoding issue
+        var bm = [
+            'javascript:(function(){',
+            'if(document.getElementById("_seo_picker"))return;',
+            'var st=document.createElement("style");',
+            'st.textContent="._sh{outline:3px solid #7c3aed!important;background:rgba(124,58,237,0.08)!important;cursor:crosshair!important;}._ss{outline:3px solid #16a34a!important;background:rgba(22,163,74,0.08)!important;}',
+            '#_seo_picker{position:fixed;top:16px;right:16px;z-index:2147483647;background:#1e293b;color:#fff;padding:16px 18px;border-radius:14px;font:600 13px/1.5 sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.5);min-width:280px;}',
+            '#_seo_picker p{margin:0 0 10px;font-size:12px;opacity:.85;}',
+            '#_seo_picker .r{display:flex;gap:8px;}',
+            '#_seo_picker button{flex:1;padding:9px;border:none;border-radius:8px;font:700 12px sans-serif;cursor:pointer;}',
+            '#_ok{background:#7c3aed;color:#fff;}#_cl{background:#374151;color:#fff;}";',
+            'document.head.appendChild(st);',
+            'var p=document.createElement("div");p.id="_seo_picker";',
+            'p.innerHTML="<p>🕷️ <b>Di chuột vào vùng bài viết</b> → <b>click chọn</b> → nhấn Lấy Outline</p><div class=\"r\"><button id=\"_ok\" disabled>✅ Lấy Outline</button><button id=\"_cl\">✖ Huỷ</button></div>";',
+            'document.body.appendChild(p);',
+            'var hv=null,sl=null;',
+            'function mv(e){if(sl)return;var el=e.target;if(el.closest&&el.closest("#_seo_picker"))return;if(hv&&hv!==el)hv.classList.remove("_sh");hv=el;el.classList.add("_sh");}',
+            'function cl(e){var el=e.target;if(el.closest&&el.closest("#_seo_picker"))return;e.preventDefault();e.stopPropagation();if(sl)sl.classList.remove("_ss");if(hv)hv.classList.remove("_sh");sl=el;el.classList.add("_ss");',
+            'document.getElementById("_ok").disabled=false;',
+            'document.getElementById("_ok").textContent="✅ Lấy Outline từ vùng này";',
+            'p.querySelector("p").innerHTML="<span style=\"color:#4ade80\">✅ Đã chọn!</span> Nhấn Lấy Outline hoặc click vùng khác.";}',
+            'document.addEventListener("mousemove",mv,true);',
+            'document.addEventListener("click",cl,true);',
+            'document.getElementById("_ok").addEventListener("click",function(){',
+            'if(!sl)return;',
+            'var hs=sl.querySelectorAll("h1,h2,h3");var out="";var seen={};',
+            'hs.forEach(function(h){var t=(h.textContent||"").replace(/\s+/g," ").trim();',
+            'if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+="<"+h.tagName.toLowerCase()+"> "+t+"\n";}});',
+            'done();',
+            'if(!out){alert("Không có H1/H2/H3 trong vùng này. Thử click vào phần tử cha bọc toàn bài.");return;}',
+            'navigator.clipboard.writeText(out.trim()).then(function(){',
+            'var n=document.createElement("div");',
+            'n.style="position:fixed;top:16px;right:16px;z-index:2147483647;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.5 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)";',
+            'n.innerHTML="🕷️ Đã copy <b>"+out.split("\n").filter(Boolean).length+"</b> headings!<br><small style=font-weight:400>Quay lại SEO Auditor → Ctrl+V dán vào ô Đối thủ</small>";',
+            'document.body.appendChild(n);setTimeout(function(){n.remove();},4000);',
+            '}).catch(function(){prompt("Copy nội dung này:",out.trim());});});',
+            'document.getElementById("_cl").addEventListener("click",done);',
+            'function done(){document.removeEventListener("mousemove",mv,true);document.removeEventListener("click",cl,true);',
+            'if(hv)hv.classList.remove("_sh");if(sl)sl.classList.remove("_ss");',
+            'var s=document.getElementById("_seo_picker");var st2=document.querySelector("style#_seo_st");',
+            'if(s)s.remove();if(st2)st2.remove();st.remove();}',
+            '})();'
+        ].join('');
+
+        link.href = bm;
+
+        // Click thường → show toast hướng dẫn
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            showToast('💡 Hướng dẫn', 'Kéo nút này vào Bookmarks Bar của Chrome. Sau đó mở trang đối thủ và click nó.', 'info');
+            showToast('💡 Cách dùng', 'Giữ chuột trái vào nút → kéo lên Bookmarks Bar → thả ra. Đừng click!', 'info');
         });
     }
 
