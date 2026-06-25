@@ -1848,48 +1848,49 @@
 
 
     // =============================================
-    // CRAWL OUTLINE — Multi-proxy fallback + AI parsing
+    // CRAWL OUTLINE — Multi-proxy + AI fallback
     // =============================================
 
     async function fetchViaProxy(url) {
         const proxies = [
             async () => {
-                const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {signal: AbortSignal.timeout(12000)});
-                if (!r.ok) throw new Error(`corsproxy HTTP ${r.status}`);
+                const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url), {signal: AbortSignal.timeout(12000)});
+                if (!r.ok) throw new Error('corsproxy HTTP ' + r.status);
                 const t = await r.text();
                 if (t.length < 200) throw new Error('Nội dung quá ngắn');
                 return t;
             },
             async () => {
-                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, {signal: AbortSignal.timeout(12000)});
-                if (!r.ok) throw new Error(`allorigins HTTP ${r.status}`);
+                const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), {signal: AbortSignal.timeout(12000)});
+                if (!r.ok) throw new Error('allorigins HTTP ' + r.status);
                 const d = await r.json();
                 if (!d.contents || d.contents.length < 200) throw new Error('Nội dung trống');
                 return d.contents;
             },
             async () => {
-                const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, {signal: AbortSignal.timeout(12000)});
-                if (!r.ok) throw new Error(`codetabs HTTP ${r.status}`);
+                const r = await fetch('https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url), {signal: AbortSignal.timeout(12000)});
+                if (!r.ok) throw new Error('codetabs HTTP ' + r.status);
                 const t = await r.text();
                 if (t.length < 200) throw new Error('Nội dung quá ngắn');
                 return t;
-            },
+            }
         ];
         let lastErr = 'Không rõ';
         for (let i = 0; i < proxies.length; i++) {
             try {
                 const html = await proxies[i]();
-                console.log(`✅ Proxy ${i+1} thành công`);
+                console.log('Proxy ' + (i+1) + ' OK');
                 return html;
             } catch(e) {
                 lastErr = e.message;
-                console.warn(`Proxy ${i+1} thất bại:`, e.message);
+                console.warn('Proxy ' + (i+1) + ' fail:', e.message);
             }
         }
-        throw new Error(`Tất cả proxy thất bại: ${lastErr}`);
+        throw new Error('Tất cả proxy thất bại: ' + lastErr);
     }
 
     function extractHeadingsFromHTML(html) {
+        let out = '';
         // Method 1: DOMParser
         try {
             const parser = new DOMParser();
@@ -1897,41 +1898,36 @@
             ['nav','header','footer','aside','script','style','noscript',
              '.sidebar','.menu','.navigation','.breadcrumb','.widget',
              '[role="navigation"]','[role="banner"]','[role="contentinfo"]'
-            ].forEach(sel => {
-                try { doc.querySelectorAll(sel).forEach(el => el.remove()); } catch(e) {}
+            ].forEach(function(sel) {
+                try { doc.querySelectorAll(sel).forEach(function(el) { el.remove(); }); } catch(e) {}
             });
-            const headings = doc.querySelectorAll('h1, h2, h3');
-            let out = '';
-            headings.forEach(h => {
+            doc.querySelectorAll('h1, h2, h3').forEach(function(h) {
                 const text = (h.textContent || '').trim().replace(/\s+/g, ' ');
                 if (text.length > 2 && text.length < 250)
-                    out += `<${h.tagName.toLowerCase()}> ${text}
-`;
+                    out += '<' + h.tagName.toLowerCase() + '> ' + text + '\n';
             });
             if (out.trim()) return out;
         } catch(e) {}
 
-        // Method 2: Regex fallback
-        let out = '';
+        // Method 2: Regex
         const re = /<h([123])[^>]*>([\s\S]*?)<\/h[123]>/gi;
         let m;
         while ((m = re.exec(html)) !== null) {
             const text = m[2].replace(/<[^>]+>/g, '').trim().replace(/\s+/g, ' ');
             if (text.length > 2 && text.length < 250)
-                out += `<h${m[1]}> ${text}
-`;
+                out += '<h' + m[1] + '> ' + text + '\n';
         }
         return out;
     }
 
     async function crawlOutline(num) {
-        const urlInput = document.getElementById(`urlComp${num}`);
-        const textarea = document.getElementById(`outlineComp${num}`);
-        const icon = document.getElementById(`crawlIcon${num}`);
+        const urlInput = document.getElementById('urlComp' + num);
+        const textarea = document.getElementById('outlineComp' + num);
+        const icon = document.getElementById('crawlIcon' + num);
         const url = urlInput.value.trim();
 
         if (!url || !url.startsWith('http')) {
-            showToast('Thiếu URL', `Vui lòng dán link bài viết đối thủ ${num} vào ô trên.`, 'warning');
+            showToast('Thiếu URL', 'Vui lòng dán link bài viết đối thủ ' + num + ' vào ô trên.', 'warning');
             return;
         }
         const provider = localStorage.getItem('seo_ai_provider');
@@ -1947,16 +1943,13 @@
         textarea.disabled = true;
 
         try {
-            // Bước 1: Fetch HTML
             const html = await fetchViaProxy(url);
-            textarea.value = `Đã tải ${Math.round(html.length/1024)}KB, đang phân tích heading...`;
+            textarea.value = 'Đã tải ' + Math.round(html.length/1024) + 'KB, đang phân tích heading...';
 
-            // Bước 2: Extract headings
             let rawOutline = extractHeadingsFromHTML(html);
 
             if (!rawOutline.trim()) {
-                // Bước 3: Trang SPA — dùng AI đọc text thô
-                textarea.value = 'Không tìm thấy heading trong HTML tĩnh. AI đang phân tích nội dung...';
+                textarea.value = 'Không có heading tĩnh. AI đang phân tích nội dung...';
                 const textContent = html
                     .replace(/<style[\s\S]*?<\/style>/gi, '')
                     .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -1965,46 +1958,36 @@
                     .trim()
                     .substring(0, 5000);
 
-                const prompt = `Đây là nội dung text của một trang web SEO tiếng Việt (đã bỏ HTML). Hãy xác định và trích xuất các tiêu đề H1, H2, H3 của bài viết chính (không lấy menu/footer/sidebar).
-Trả về mỗi dòng theo format: <h1> ..., <h2> ..., hoặc <h3> ...
-Chỉ trả về danh sách heading, không thêm gì khác.
+                const prompt = 'Đây là nội dung text của một trang web SEO tiếng Việt. Hãy xác định và trích xuất các tiêu đề H1, H2, H3 của bài viết chính (bỏ qua menu/footer/sidebar).\nTrả về mỗi dòng theo format: <h1> ..., <h2> ..., hoặc <h3> ...\nChỉ trả về danh sách heading, không thêm gì khác.\n\nNội dung:\n' + textContent;
 
-Nội dung:
-${textContent}`;
-                rawOutline = await callProviderAPI(provider, key, prompt);
-                textarea.value = rawOutline.trim();
+                const result = await callProviderAPI(provider, key, prompt);
+                textarea.value = result.trim();
                 runRealtimeAudit();
-                showToast(`✅ Đối thủ ${num}`, 'AI đã phân tích thành công (trang dùng JS render).', 'success');
+                showToast('✅ Đối thủ ' + num, 'AI đã phân tích thành công (trang JS render).', 'success');
                 return;
             }
 
-            // Bước 4: AI lọc sạch heading thừa
-            const headingCount = rawOutline.split('
-').filter(Boolean).length;
-            textarea.value = `Tìm thấy ${headingCount} headings, AI đang lọc nội dung chính...`;
+            const headingCount = rawOutline.split('\n').filter(Boolean).length;
+            textarea.value = 'Tìm thấy ' + headingCount + ' headings, AI đang lọc nội dung chính...';
 
-            const prompt = `Lọc danh sách heading cào từ trang web SEO. Giữ lại chỉ H1/H2/H3 của nội dung bài viết chính, bỏ menu/footer/sidebar/quảng cáo/tên website.
-Format mỗi dòng: <h1> ..., <h2> ..., <h3> ...
-Chỉ trả về danh sách, không giải thích.
-
-Heading thô:
-${rawOutline}`;
+            const prompt = 'Lọc danh sách heading từ trang web SEO. Giữ lại chỉ H1/H2/H3 của nội dung bài viết chính, bỏ menu/footer/sidebar/quảng cáo.\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nHeading thô:\n' + rawOutline;
 
             const cleaned = await callProviderAPI(provider, key, prompt);
             textarea.value = cleaned.trim();
             runRealtimeAudit();
-            const hostname = (() => { try { return new URL(url).hostname; } catch(e) { return url; } })();
-            showToast(`✅ Đối thủ ${num}`, `Đã cào ${cleaned.split('
-').filter(Boolean).length} headings từ ${hostname}`, 'success');
+            let hostname = url;
+            try { hostname = new URL(url).hostname; } catch(e) {}
+            showToast('✅ Đối thủ ' + num, 'Đã cào outline từ ' + hostname, 'success');
 
         } catch (err) {
             textarea.value = '';
-            showToast(`Lỗi Đối thủ ${num}`, err.message, 'warning');
+            showToast('Lỗi Đối thủ ' + num, err.message, 'warning');
         } finally {
             icon.className = 'fa-solid fa-magnifying-glass';
             textarea.disabled = false;
         }
     }
+
 
     // Initialize content load event
     window.onload = function() {
