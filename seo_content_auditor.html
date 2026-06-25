@@ -196,14 +196,51 @@
             </div>
 
             <!-- Bookmarklet banner -->
-            <div class="mb-4 p-3 bg-violet-50 border border-violet-200 rounded-xl text-xs text-violet-900 space-y-2">
-                <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-bookmark text-violet-500"></i> Cách cào Outline nhanh nhất (Bookmarklet)</p>
-                <p>Kéo nút bên dưới vào <strong>Bookmarks Bar</strong> của Chrome. Sau đó mở trang đối thủ → click bookmarklet → outline tự copy vào clipboard → dán vào ô bên dưới.</p>
-                <div class="flex items-center gap-2 pt-1">
-                    <a id="bookmarkletLink" href="" class="inline-flex items-center gap-1.5 px-3 py-2 bg-violet-600 text-white font-bold rounded-lg text-xs cursor-grab active:cursor-grabbing select-none">
-                        🕷️ Cào SEO Outline
-                    </a>
-                    <span class="text-violet-600 text-[10px]">← Kéo cái này vào Bookmarks Bar</span>
+            <div class="mb-4 bg-violet-50 border border-violet-200 rounded-xl text-xs text-violet-900 overflow-hidden">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <p class="font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-bookmark text-violet-500"></i> Cào Outline tự động bằng Bookmarklet
+                    </p>
+                    <button onclick="document.getElementById('bookmarkletGuide').classList.toggle('hidden')"
+                        class="text-[10px] text-violet-600 font-bold hover:underline">
+                        Hướng dẫn setup ▾
+                    </button>
+                </div>
+
+                <!-- Hướng dẫn collapsible -->
+                <div id="bookmarkletGuide" class="hidden px-4 pb-4 space-y-3 border-t border-violet-200 pt-3">
+                    <div class="flex items-start gap-2">
+                        <span class="bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold shrink-0 mt-0.5">1</span>
+                        <p>Bật <strong>Bookmarks Bar</strong> trong Chrome: nhấn <kbd class="bg-white border border-violet-300 px-1 py-0.5 rounded text-[10px]">Ctrl+Shift+B</kbd></p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold shrink-0 mt-0.5">2</span>
+                        <div class="space-y-1.5">
+                            <p>Kéo nút bên dưới lên <strong>Bookmarks Bar</strong> (thanh bookmark phía trên trình duyệt):</p>
+                            <a id="bookmarkletLink" href=""
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl cursor-grab active:cursor-grabbing select-none shadow-sm">
+                                🕷️ Cào SEO Outline
+                            </a>
+                            <p class="text-violet-500 text-[10px]">Giữ chuột vào nút → kéo lên thanh Bookmarks Bar → thả ra</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold shrink-0 mt-0.5">3</span>
+                        <p>Mở trang bài viết đối thủ → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar → outline tự copy vào clipboard</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold shrink-0 mt-0.5">4</span>
+                        <p>Quay lại đây → <strong>Ctrl+V</strong> dán vào ô Đối thủ 1/2/3/4 bên dưới</p>
+                    </div>
+                    <div class="bg-white border border-violet-100 rounded-lg p-2.5 text-[10px] text-violet-700">
+                        💡 <strong>Tại sao dùng bookmarklet?</strong> Chạy JS trực tiếp trong tab đối thủ → đọc DOM thật sau khi trang render xong → hoạt động với mọi trang kể cả SPA/React/Next.js, không bị chặn bởi Cloudflare hay bot protection.
+                    </div>
+                </div>
+
+                <!-- Quick action khi đã setup -->
+                <div class="px-4 pb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-violet-400 text-[10px]"></i>
+                    <span class="text-violet-500 text-[10px]">Sau khi cào xong → dán vào ô bên dưới là xong</span>
                 </div>
             </div>
 
