@@ -196,42 +196,48 @@
             </div>
 
             <!-- Bookmarklet banner -->
-            <div class="mb-4 bg-violet-50 border border-violet-200 rounded-xl overflow-hidden">
-                <!-- Header luôn hiển thị -->
-                <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-                    <p class="text-xs font-bold text-violet-900 flex items-center gap-1.5">
-                        <i class="fa-solid fa-spider text-violet-500"></i> Cào Outline đối thủ tự động
-                    </p>
-                    <!-- NÚT BOOKMARKLET — luôn hiển thị, kéo lên Bookmarks Bar -->
-                    <a id="bookmarkletLink" href="#"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-lg shadow cursor-grab active:cursor-grabbing select-none transition-all">
-                        🕷️ Cào SEO Outline
-                    </a>
+            <div class="mb-4 bg-violet-50 border-2 border-violet-300 rounded-xl p-4 space-y-3">
+                <p class="text-xs font-bold text-violet-900 flex items-center gap-2">
+                    <i class="fa-solid fa-spider text-violet-500"></i>
+                    Cào Outline đối thủ tự động — Setup 1 lần, dùng mãi
+                </p>
+
+                <!-- Bước 1 -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+                    <p>Nhấn <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+Shift+B</kbd> để hiện <strong>Bookmarks Bar</strong> trong Chrome</p>
                 </div>
-                <!-- Hướng dẫn luôn hiển thị -->
-                <div class="px-4 pb-4 space-y-2 border-t border-violet-100">
-                    <p class="text-[11px] text-violet-700 font-semibold pt-2">Setup 1 lần, dùng mãi:</p>
-                    <div class="grid grid-cols-1 gap-1.5 text-[11px] text-violet-800">
-                        <div class="flex items-start gap-2">
-                            <span class="bg-violet-600 text-white rounded-full w-4 h-4 flex items-center justify-center font-bold shrink-0 text-[9px] mt-0.5">1</span>
-                            <p>Nhấn <kbd class="bg-white border border-violet-300 px-1 rounded text-[10px] font-mono">Ctrl+Shift+B</kbd> để hiện thanh Bookmarks Bar</p>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="bg-violet-600 text-white rounded-full w-4 h-4 flex items-center justify-center font-bold shrink-0 text-[9px] mt-0.5">2</span>
-                            <p><strong>Kéo nút tím "🕷️ Cào SEO Outline"</strong> ở trên lên thanh Bookmarks Bar rồi thả ra</p>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="bg-violet-600 text-white rounded-full w-4 h-4 flex items-center justify-center font-bold shrink-0 text-[9px] mt-0.5">3</span>
-                            <p>Mở trang đối thủ → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar → outline tự copy vào clipboard</p>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="bg-violet-600 text-white rounded-full w-4 h-4 flex items-center justify-center font-bold shrink-0 text-[9px] mt-0.5">4</span>
-                            <p>Quay lại đây → <strong>Ctrl+V</strong> dán vào ô Đối thủ 1/2/3/4 bên dưới</p>
-                        </div>
+
+                <!-- Bước 2 — nút kéo -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
+                    <div class="space-y-2 w-full">
+                        <p><strong>Kéo nút bên dưới</strong> lên thanh Bookmarks Bar (thanh hiển thị ngay dưới thanh địa chỉ):</p>
+                        <a href="javascript:(function(){var R=['nav','header','footer','aside','script','style','noscript','.sidebar','.menu','.navigation','.breadcrumb','.widget'];var w=document.createElement('div');w.innerHTML=document.body.innerHTML;R.forEach(function(s){try{w.querySelectorAll(s).forEach(function(e){e.remove()});}catch(e){}});var out='';var seen={};w.querySelectorAll('h1,h2,h3').forEach(function(h){var t=(h.textContent||'').replace(/\s+/g,' ').trim();if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}});if(!out){alert('Kh\u00f4ng t\u00ecm th\u1ea5y heading!');return;}navigator.clipboard.writeText(out.trim()).then(function(){var n=document.createElement('div');n.style='position:fixed;top:16px;right:16px;z-index:9999999;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.4 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)';n.innerHTML='&#128373;&#65039; \u0110\u00e3 copy '+out.split('\n').filter(Boolean).length+' headings!<br><small style=font-weight:400>Quay l\u1ea1i SEO Auditor \u2192 Ctrl+V d\u00e1n v\u00e0o \u00f4 \u0110\u1ed1i th\u1ee7</small>';document.body.appendChild(n);setTimeout(function(){n.remove();},4000);}).catch(function(){prompt('Copy n\u1ed9i dung n\u00e0y:',out.trim());});})();"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow-md cursor-grab select-none transition-all"
+                            onclick="event.preventDefault(); showToast('💡 Hướng dẫn','Giữ chuột trái vào nút này → kéo lên thanh Bookmarks Bar bên trên → thả ra. Không click!','info');">
+                            🕷️ Cào SEO Outline
+                        </a>
+                        <p class="text-[10px] text-violet-500">👆 Giữ chuột trái → kéo lên thanh bookmark → thả ra</p>
                     </div>
                 </div>
-            </div>
 
+                <!-- Bước 3 & 4 -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
+                    <p>Mở trang đối thủ bất kỳ → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar → heading tự động copy vào clipboard</p>
+                </div>
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
+                    <p>Quay lại đây → <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+V</kbd> dán vào ô Đối thủ 1/2/3/4 bên dưới</p>
+                </div>
+
+                <!-- Không có Bookmarks Bar? -->
+                <div class="bg-white border border-violet-100 rounded-lg p-2.5 text-[10px] text-slate-500 space-y-1">
+                    <p class="font-semibold text-slate-600">💡 Không thấy thanh Bookmarks Bar?</p>
+                    <p>Chrome → nhấn <kbd class="border px-1 rounded font-mono">Ctrl+Shift+B</kbd> để bật lên. Hoặc click chuột phải vào vùng trống trên thanh tab → chọn <em>Show bookmarks bar</em>.</p>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Competitor 1 -->
                 <div class="space-y-1.5">
