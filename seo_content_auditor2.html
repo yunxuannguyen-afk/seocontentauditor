@@ -194,23 +194,70 @@
                 </h2>
                 <button type="button" onclick="autoGenerateSampleOutlines()" class="text-xs text-blue-600 hover:underline font-bold">Tự điền nhanh mẫu</button>
             </div>
-            
+
+            <!-- Bookmarklet banner -->
+            <div class="mb-4 bg-violet-50 border-2 border-violet-300 rounded-xl p-4 space-y-3">
+                <p class="text-xs font-bold text-violet-900 flex items-center gap-2">
+                    <i class="fa-solid fa-spider text-violet-500"></i>
+                    Cào Outline đối thủ tự động — Setup 1 lần, dùng mãi
+                </p>
+
+                <!-- Bước 1 -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+                    <p>Nhấn <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+Shift+B</kbd> để hiện <strong>Bookmarks Bar</strong> trong Chrome</p>
+                </div>
+
+                <!-- Bước 2 — nút kéo -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
+                    <div class="space-y-2 w-full">
+                        <p><strong>Kéo nút bên dưới</strong> lên thanh Bookmarks Bar (thanh hiển thị ngay dưới thanh địa chỉ):</p>
+                        <a href="javascript:(function(){var R=['nav','header','footer','aside','script','style','noscript','.sidebar','.menu','.navigation','.breadcrumb','.widget'];var w=document.createElement('div');w.innerHTML=document.body.innerHTML;R.forEach(function(s){try{w.querySelectorAll(s).forEach(function(e){e.remove()});}catch(e){}});var out='';var seen={};w.querySelectorAll('h1,h2,h3').forEach(function(h){var t=(h.textContent||'').replace(/\s+/g,' ').trim();if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}});if(!out){alert('Kh\u00f4ng t\u00ecm th\u1ea5y heading!');return;}navigator.clipboard.writeText(out.trim()).then(function(){var n=document.createElement('div');n.style='position:fixed;top:16px;right:16px;z-index:9999999;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.4 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)';n.innerHTML='&#128373;&#65039; \u0110\u00e3 copy '+out.split('\n').filter(Boolean).length+' headings!<br><small style=font-weight:400>Quay l\u1ea1i SEO Auditor \u2192 Ctrl+V d\u00e1n v\u00e0o \u00f4 \u0110\u1ed1i th\u1ee7</small>';document.body.appendChild(n);setTimeout(function(){n.remove();},4000);}).catch(function(){prompt('Copy n\u1ed9i dung n\u00e0y:',out.trim());});})();"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow-md cursor-grab select-none transition-all"
+                            onclick="event.preventDefault(); showToast('💡 Hướng dẫn','Giữ chuột trái vào nút này → kéo lên thanh Bookmarks Bar bên trên → thả ra. Không click!','info');">
+                            🕷️ Cào SEO Outline
+                        </a>
+                        <p class="text-[10px] text-violet-500">👆 Giữ chuột trái → kéo lên thanh bookmark → thả ra</p>
+                    </div>
+                </div>
+
+                <!-- Bước 3 & 4 -->
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
+                    <p>Mở trang đối thủ bất kỳ → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar → heading tự động copy vào clipboard</p>
+                </div>
+                <div class="flex items-start gap-3 text-xs text-violet-800">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
+                    <p>Quay lại đây → <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+V</kbd> dán vào ô Đối thủ 1/2/3/4 bên dưới</p>
+                </div>
+
+                <!-- Không có Bookmarks Bar? -->
+                <div class="bg-white border border-violet-100 rounded-lg p-2.5 text-[10px] text-slate-500 space-y-1">
+                    <p class="font-semibold text-slate-600">💡 Không thấy thanh Bookmarks Bar?</p>
+                    <p>Chrome → nhấn <kbd class="border px-1 rounded font-mono">Ctrl+Shift+B</kbd> để bật lên. Hoặc click chuột phải vào vùng trống trên thanh tab → chọn <em>Show bookmarks bar</em>.</p>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-emerald-700 mb-1"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
-                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                <!-- Competitor 1 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-emerald-700"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
+                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
-                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                <!-- Competitor 2 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
+                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
-                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                <!-- Competitor 3 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
+                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
-                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                <!-- Competitor 4 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
+                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
             </div>
         </div>
@@ -398,18 +445,21 @@
                     <!-- ===== SETUP PANEL (shown when not connected) ===== -->
                     <div id="aiSetupPanel" class="space-y-4">
 
-                        <!-- Deploy notice -->
-                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex gap-2">
-                            <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
-                            <div class="space-y-1">
-                                <p><strong>⚠️ Tính năng AI chỉ hoạt động khi file được deploy lên web</strong>, không chạy được khi mở file trực tiếp (file://) hoặc trong claude.ai.</p>
-                                <p>👉 Deploy miễn phí lên <a href="https://pages.github.com" target="_blank" class="underline font-bold">GitHub Pages</a> hoặc <a href="https://netlify.com" target="_blank" class="underline font-bold">Netlify</a> rồi mở link đó.</p>
-                                <p class="text-amber-700">Key chỉ lưu trên trình duyệt của bạn, không qua server nào.</p>
-                            </div>
+                        <!-- Info banner -->
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex gap-2">
+                            <i class="fa-solid fa-shield-halved mt-0.5 shrink-0 text-slate-400"></i>
+                            <p>API key chỉ lưu trên trình duyệt của bạn, không qua bất kỳ server trung gian nào.</p>
                         </div>
 
                         <!-- Visual provider guide (read-only) -->
-                        <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div class="grid grid-cols-2 gap-2 text-center text-[10px]">
+                            <div class="p-2.5 bg-orange-50 border-2 border-orange-300 rounded-xl relative">
+                                <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">MIỄN PHÍ</span>
+                                <div class="text-base mb-1 mt-1">🟠</div>
+                                <div class="font-bold text-orange-700">Groq</div>
+                                <div class="text-orange-400 mt-0.5 font-mono">gsk_...</div>
+                                <a href="https://console.groq.com/keys" target="_blank" class="text-orange-600 underline text-[9px] block mt-1">Lấy key miễn phí</a>
+                            </div>
                             <div class="p-2.5 bg-violet-50 border border-violet-200 rounded-xl">
                                 <div class="text-base mb-1">🟣</div>
                                 <div class="font-bold text-violet-700">Claude</div>
@@ -418,7 +468,7 @@
                             <div class="p-2.5 bg-blue-50 border border-blue-200 rounded-xl">
                                 <div class="text-base mb-1">🔵</div>
                                 <div class="font-bold text-blue-700">Gemini</div>
-                                <div class="text-blue-400 mt-0.5 font-mono">AIzaSy...</div>
+                                <div class="text-blue-400 mt-0.5 font-mono">AIzaSy... / AQ...</div>
                             </div>
                             <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
                                 <div class="text-base mb-1">🟢</div>
@@ -435,7 +485,7 @@
                             </div>
                             <div class="relative">
                                 <input type="password" id="aiApiKeyInput"
-                                    placeholder="sk-ant-...  /  AIzaSy...  /  sk-proj-..."
+                                    placeholder="sk-ant-...  /  AIzaSy... or AQ....  /  sk-proj-..."
                                     autocomplete="off"
                                     oninput="detectProviderFromKey(this.value)"
                                     class="w-full px-3 py-2.5 pr-10 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400 focus:bg-white font-mono transition-all">
@@ -1809,12 +1859,47 @@
         });
     }
 
+
+    // ── Bookmarklet setup ──────────────────────────────────────────────
+    function initBookmarklet() {
+        const link = document.getElementById('bookmarkletLink');
+        if (!link) return;
+        const code = `javascript:(function(){
+var REMOVE=['nav','header','footer','aside','script','style','noscript','.sidebar','.menu','.navigation','.breadcrumb','.widget','[role=navigation]','[role=banner]','[role=contentinfo]'];
+var wrap=document.createElement('div');
+wrap.innerHTML=document.body.innerHTML;
+REMOVE.forEach(function(s){try{wrap.querySelectorAll(s).forEach(function(e){e.remove()});}catch(e){}});
+var out='';var seen={};
+wrap.querySelectorAll('h1,h2,h3').forEach(function(h){
+var t=(h.textContent||'').replace(/\s+/g,' ').trim();
+if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}
+});
+if(!out){alert('Không tìm thấy heading H1/H2/H3 nào trong trang này!');return;}
+navigator.clipboard.writeText(out.trim()).then(function(){
+var n=document.createElement('div');
+n.style='position:fixed;top:20px;right:20px;z-index:999999;background:#3b82f6;color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:bold;font-family:sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.3)';
+n.textContent='✅ Đã copy '+out.split('\n').filter(Boolean).length+' headings! Dán vào SEO Auditor.';
+document.body.appendChild(n);setTimeout(function(){n.remove();},3000);
+}).catch(function(){
+prompt('Copy nội dung này:',out.trim());
+});
+})();`;
+        link.href = code;
+        // Ngăn click thường (chỉ dùng drag)
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('💡 Hướng dẫn', 'Kéo nút này vào Bookmarks Bar của Chrome. Sau đó mở trang đối thủ và click nó.', 'info');
+        });
+    }
+
+
     // Initialize content load event
     window.onload = function() {
         updateCounters();
         runRealtimeAudit();
         renderAuditHistory();
         initAiPanel();
+        initBookmarklet();
     }
 
     // =============================================
@@ -1826,8 +1911,9 @@
     // =============================================
     // AI PROVIDER — Auto-detect từ prefix của API key
     // Claude:  sk-ant-...
-    // Gemini:  AIzaSy...
+    // Gemini:  AIzaSy... (cũ) hoặc AQ.... (mới từ AI Studio)
     // OpenAI:  sk-proj-... hoặc sk-...
+    // Groq:    gsk_... (MIỄN PHÍ — console.groq.com)
     // =============================================
 
     const PROVIDER_CONFIG = {
@@ -1848,14 +1934,22 @@
             badge: '🟢 ChatGPT (OpenAI)',
             model: 'gpt-4o',
             badgeClass: 'bg-emerald-100 text-emerald-700'
+        },
+        groq: {
+            name: 'Groq',
+            badge: '🟠 Groq (Free)',
+            model: 'llama-3.3-70b-versatile',
+            badgeClass: 'bg-orange-100 text-orange-700'
         }
     };
 
     function detectProvider(key) {
         if (!key) return null;
         if (key.startsWith('sk-ant-')) return 'claude';
-        if (key.startsWith('AIzaSy')) return 'gemini';
+        if (key.startsWith('AIzaSy') || key.startsWith('AQ.') || key.startsWith('AQ')) return 'gemini';
+        if (key.startsWith('gsk_')) return 'groq';
         if (key.startsWith('sk-proj-') || key.startsWith('sk-')) return 'openai';
+        if (/^[A-Za-z0-9_.]{30,}$/.test(key) && key.includes('.')) return 'gemini';
         return null;
     }
 
@@ -1892,7 +1986,7 @@
         }
         const provider = detectProvider(key);
         if (!provider) {
-            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy...), ChatGPT (sk-proj-...).');
+            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy.../AQ...), ChatGPT (sk-proj-...), Groq (gsk_...).');
             return;
         }
         showApiTestStatus('loading', `Đang kiểm tra kết nối ${PROVIDER_CONFIG[provider].name}...`);
@@ -1975,13 +2069,6 @@
     async function callProviderAPI(provider, key, prompt) {
         const model = PROVIDER_CONFIG[provider].model;
 
-        // Detect environment — file:// and artifact iframes cannot make cross-origin requests
-        const isLocalFile = location.protocol === 'file:';
-        const isArtifact = location.hostname === 'claude.ai' || location.hostname.endsWith('.claude.ai') || window.self !== window.top;
-        if (isLocalFile || isArtifact) {
-            throw new Error('Tính năng AI không hoạt động khi mở file trực tiếp hoặc trong claude.ai. Hãy deploy lên GitHub Pages hoặc Netlify rồi mở link đó.');
-        }
-
         try {
             if (provider === 'claude') {
                 const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2004,17 +2091,30 @@
             }
 
             if (provider === 'gemini') {
-                const res = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                // Thử lần lượt các model từ nhẹ → mạnh
+                const geminiModels = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+                let lastError = null;
+                for (const gModel of geminiModels) {
+                    try {
+                        const res = await fetch(
+                            `https://generativelanguage.googleapis.com/v1beta/models/${gModel}:generateContent?key=${key}`,
+                            {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                            }
+                        );
+                        const data = await res.json();
+                        if (data.error) {
+                            lastError = data.error.message;
+                            continue; // thử model tiếp theo
+                        }
+                        return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    } catch(e) {
+                        lastError = e.message;
                     }
-                );
-                const data = await res.json();
-                if (data.error) throw new Error(data.error.message);
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                }
+                throw new Error(lastError || 'Tất cả Gemini models đều thất bại');
             }
 
             if (provider === 'openai') {
@@ -2035,11 +2135,29 @@
                 return data.choices?.[0]?.message?.content || '';
             }
 
-            throw new Error('Provider không hợp lệ');
+            if (provider === 'groq') {
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        max_tokens: 1200,
+                        messages: [{ role: 'user', content: prompt }]
+                    })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                return data.choices?.[0]?.message?.content || '';
+            }
+
+        throw new Error('Provider không hợp lệ');
 
         } catch (err) {
             if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-                throw new Error('Không thể kết nối API. Hãy deploy file lên GitHub Pages hoặc Netlify — tính năng AI không chạy được từ file local hoặc claude.ai.');
+                throw new Error('Không thể kết nối API. Vui lòng kiểm tra lại API key và kết nối mạng.');
             }
             throw err;
         }
