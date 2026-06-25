@@ -1851,92 +1851,59 @@
     // CRAWL OUTLINE — Multi-proxy + AI fallback
     // =============================================
 
+    // ── FETCH qua Jina AI Reader (r.jina.ai) ──────────────────────────
+    // Jina chuyển bất kỳ URL nào thành Markdown sạch, hỗ trợ SPA/JS render,
+    // miễn phí, không cần key, không bị CORS.
+    // Fallback: corsproxy.io → allorigins nếu Jina chậm.
     async function fetchViaProxy(url) {
-        // Proxy theo thứ tự độ tin cậy — thêm User-Agent giả browser để bypass bot check
         const encoded = encodeURIComponent(url);
+
         const proxies = [
-            // 1. corsproxy.io — hỗ trợ custom header
+            // 1. Jina AI Reader — trả về Markdown có heading rõ ràng, hỗ trợ mọi trang
+            async () => {
+                const r = await fetch('https://r.jina.ai/' + url, {
+                    signal: AbortSignal.timeout(20000),
+                    headers: { 'Accept': 'text/markdown,text/plain,*/*' }
+                });
+                if (!r.ok) throw new Error('jina ' + r.status);
+                const t = await r.text();
+                if (t.length < 100) throw new Error('Jina trả về rỗng');
+                return { text: t, isMarkdown: true };
+            },
+            // 2. corsproxy.io
             async () => {
                 const r = await fetch('https://corsproxy.io/?' + encoded, {
-                    signal: AbortSignal.timeout(12000),
-                    headers: {'x-requested-with': 'XMLHttpRequest'}
+                    signal: AbortSignal.timeout(12000)
                 });
                 if (!r.ok) throw new Error('corsproxy ' + r.status);
                 const t = await r.text();
-                if (t.length < 300 || t.includes('Access denied')) throw new Error('Bị chặn');
-                return t;
+                if (t.length < 300) throw new Error('Nội dung quá ngắn');
+                return { text: t, isMarkdown: false };
             },
-            // 2. allorigins raw (không wrap JSON)
+            // 3. allorigins
             async () => {
-                const r = await fetch('https://api.allorigins.win/raw?url=' + encoded, {signal: AbortSignal.timeout(12000)});
+                const r = await fetch('https://api.allorigins.win/raw?url=' + encoded, {
+                    signal: AbortSignal.timeout(12000)
+                });
                 if (!r.ok) throw new Error('allorigins ' + r.status);
                 const t = await r.text();
                 if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return t;
-            },
-            // 3. allorigins JSON (fallback nếu raw bị lỗi encoding)
-            async () => {
-                const r = await fetch('https://api.allorigins.win/get?url=' + encoded, {signal: AbortSignal.timeout(12000)});
-                if (!r.ok) throw new Error('allorigins-json ' + r.status);
-                const d = await r.json();
-                if (!d.contents || d.contents.length < 300) throw new Error('Nội dung trống');
-                return d.contents;
-            },
-            // 4. corsanywhere public demo (rate limited nhưng vẫn dùng được)
-            async () => {
-                const r = await fetch('https://cors-anywhere.herokuapp.com/' + url, {
-                    signal: AbortSignal.timeout(15000),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Origin': 'https://seocontentauditor.netlify.app'
-                    }
-                });
-                if (!r.ok) throw new Error('cors-anywhere ' + r.status);
-                const t = await r.text();
-                if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return t;
-            },
-            // 5. codetabs
-            async () => {
-                const r = await fetch('https://api.codetabs.com/v1/proxy?quest=' + encoded, {signal: AbortSignal.timeout(12000)});
-                if (!r.ok) throw new Error('codetabs ' + r.status);
-                const t = await r.text();
-                if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return t;
-            },
-            // 6. htmlreader.io
-            async () => {
-                const r = await fetch('https://htmlreader.p.rapidapi.com/?url=' + encoded, {
-                    signal: AbortSignal.timeout(12000),
-                    headers: {
-                        'x-rapidapi-host': 'htmlreader.p.rapidapi.com',
-                        'x-rapidapi-key': 'SIGN-UP-FOR-KEY'
-                    }
-                });
-                if (!r.ok) throw new Error('htmlreader ' + r.status);
-                const t = await r.text();
-                if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return t;
+                return { text: t, isMarkdown: false };
             },
         ];
 
         let lastErr = 'Không rõ';
         for (let i = 0; i < proxies.length; i++) {
             try {
-                const html = await proxies[i]();
-                console.log('✅ Proxy ' + (i+1) + ' thành công');
-                return html;
+                const result = await proxies[i]();
+                console.log('✅ Proxy ' + (i+1) + ' OK');
+                return result;
             } catch(e) {
                 lastErr = e.message;
-                console.warn('Proxy ' + (i+1) + ' thất bại:', e.message);
+                console.warn('Proxy ' + (i+1) + ' fail:', e.message);
             }
         }
-
-        // Tất cả proxy thất bại → gợi ý user dùng cách thủ công
-        throw new Error(
-            'Không thể tải trang tự động. Trang này chặn bot hoặc cần đăng nhập.\n' +
-            '💡 Cách thủ công: Mở trang đối thủ → nhấn Ctrl+U để xem source → copy phần heading H1/H2/H3 dán vào ô bên dưới.'
-        );
+        throw new Error('Không thể tải trang. ' + lastErr);
     }
 
     function extractHeadingsFromHTML(html) {
@@ -1993,41 +1960,62 @@
         textarea.disabled = true;
 
         try {
-            const html = await fetchViaProxy(url);
-            textarea.value = 'Đã tải ' + Math.round(html.length/1024) + 'KB, đang phân tích heading...';
+            // Bước 1: Fetch nội dung
+            const fetched = await fetchViaProxy(url);
+            const sizeKB = Math.round(fetched.text.length / 1024);
+            textarea.value = 'Đã tải ' + sizeKB + 'KB, đang phân tích heading...';
 
-            let rawOutline = extractHeadingsFromHTML(html);
+            let rawOutline = '';
+
+            if (fetched.isMarkdown) {
+                // Jina trả về Markdown — parse heading ## / # trực tiếp
+                const lines = fetched.text.split('\n');
+                for (const line of lines) {
+                    const m = line.match(/^(#{1,3})\s+(.+)/);
+                    if (m) {
+                        const level = m[1].length;
+                        const text = m[2].replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim();
+                        if (text.length > 2 && text.length < 250) {
+                            rawOutline += '<h' + level + '> ' + text + '\n';
+                        }
+                    }
+                }
+            } else {
+                // HTML thường — parse DOM
+                rawOutline = extractHeadingsFromHTML(fetched.text);
+            }
+
+            let hostname = url;
+            try { hostname = new URL(url).hostname; } catch(e) {}
 
             if (!rawOutline.trim()) {
-                textarea.value = 'Không có heading tĩnh. AI đang phân tích nội dung...';
-                const textContent = html
-                    .replace(/<style[\s\S]*?<\/style>/gi, '')
-                    .replace(/<script[\s\S]*?<\/script>/gi, '')
+                // Fallback: AI đọc text thô
+                textarea.value = 'Không tìm thấy heading. AI đang phân tích nội dung...';
+                const textSnippet = fetched.text
                     .replace(/<[^>]+>/g, ' ')
                     .replace(/\s+/g, ' ')
                     .trim()
                     .substring(0, 5000);
 
-                const prompt = 'Đây là nội dung text của một trang web SEO tiếng Việt. Hãy xác định và trích xuất các tiêu đề H1, H2, H3 của bài viết chính (bỏ qua menu/footer/sidebar).\nTrả về mỗi dòng theo format: <h1> ..., <h2> ..., hoặc <h3> ...\nChỉ trả về danh sách heading, không thêm gì khác.\n\nNội dung:\n' + textContent;
+                const prompt = 'Đây là nội dung trang web SEO. Hãy xác định và trích xuất các tiêu đề H1, H2, H3 của bài viết chính (bỏ menu/footer/sidebar).\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nNội dung:\n' + textSnippet;
 
                 const result = await callProviderAPI(provider, key, prompt);
                 textarea.value = result.trim();
                 runRealtimeAudit();
-                showToast('✅ Đối thủ ' + num, 'AI đã phân tích thành công (trang JS render).', 'success');
+                showToast('✅ Đối thủ ' + num, 'AI phân tích xong từ ' + hostname, 'success');
                 return;
             }
 
+            // Bước 3: AI lọc sạch
             const headingCount = rawOutline.split('\n').filter(Boolean).length;
             textarea.value = 'Tìm thấy ' + headingCount + ' headings, AI đang lọc nội dung chính...';
 
-            const prompt = 'Lọc danh sách heading từ trang web SEO. Giữ lại chỉ H1/H2/H3 của nội dung bài viết chính, bỏ menu/footer/sidebar/quảng cáo.\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nHeading thô:\n' + rawOutline;
+            const prompt = 'Lọc danh sách heading từ trang web SEO. Giữ lại chỉ H1/H2/H3 của nội dung bài viết chính, bỏ menu/footer/sidebar/quảng cáo.\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nHeading:\n' + rawOutline;
 
             const cleaned = await callProviderAPI(provider, key, prompt);
             textarea.value = cleaned.trim();
             runRealtimeAudit();
-            let hostname = url;
-            try { hostname = new URL(url).hostname; } catch(e) {}
-            showToast('✅ Đối thủ ' + num, 'Đã cào outline từ ' + hostname, 'success');
+            showToast('✅ Đối thủ ' + num, 'Đã cào ' + cleaned.split('\n').filter(Boolean).length + ' headings từ ' + hostname, 'success');
 
         } catch (err) {
             textarea.value = '';
