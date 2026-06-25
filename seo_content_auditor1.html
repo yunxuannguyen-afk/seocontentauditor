@@ -195,56 +195,38 @@
                 <button type="button" onclick="autoGenerateSampleOutlines()" class="text-xs text-blue-600 hover:underline font-bold">Tự điền nhanh mẫu</button>
             </div>
 
-            <!-- Crawler notice -->
-            <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex gap-2">
-                <i class="fa-solid fa-spider mt-0.5 shrink-0"></i>
-                <p>Dán link bài viết đối thủ → nhấn <strong>🔍 Cào Outline</strong> để AI tự động trích xuất H1/H2/H3. Yêu cầu đã kết nối AI ở tab <strong>AI Phân tích</strong>.</p>
+            <!-- Bookmarklet banner -->
+            <div class="mb-4 p-3 bg-violet-50 border border-violet-200 rounded-xl text-xs text-violet-900 space-y-2">
+                <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-bookmark text-violet-500"></i> Cách cào Outline nhanh nhất (Bookmarklet)</p>
+                <p>Kéo nút bên dưới vào <strong>Bookmarks Bar</strong> của Chrome. Sau đó mở trang đối thủ → click bookmarklet → outline tự copy vào clipboard → dán vào ô bên dưới.</p>
+                <div class="flex items-center gap-2 pt-1">
+                    <a id="bookmarkletLink" href="" class="inline-flex items-center gap-1.5 px-3 py-2 bg-violet-600 text-white font-bold rounded-lg text-xs cursor-grab active:cursor-grabbing select-none">
+                        🕷️ Cào SEO Outline
+                    </a>
+                    <span class="text-violet-600 text-[10px]">← Kéo cái này vào Bookmarks Bar</span>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Competitor 1 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-emerald-700"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
-                    <div class="flex gap-1.5">
-                        <input type="url" id="urlComp1" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
-                        <button onclick="crawlOutline(1)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
-                            <i id="crawlIcon1" class="fa-solid fa-magnifying-glass"></i> Cào
-                        </button>
-                    </div>
-                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 2 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
-                    <div class="flex gap-1.5">
-                        <input type="url" id="urlComp2" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
-                        <button onclick="crawlOutline(2)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
-                            <i id="crawlIcon2" class="fa-solid fa-magnifying-glass"></i> Cào
-                        </button>
-                    </div>
-                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 3 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
-                    <div class="flex gap-1.5">
-                        <input type="url" id="urlComp3" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
-                        <button onclick="crawlOutline(3)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
-                            <i id="crawlIcon3" class="fa-solid fa-magnifying-glass"></i> Cào
-                        </button>
-                    </div>
-                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
                 <!-- Competitor 4 -->
                 <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
-                    <div class="flex gap-1.5">
-                        <input type="url" id="urlComp4" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
-                        <button onclick="crawlOutline(4)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
-                            <i id="crawlIcon4" class="fa-solid fa-magnifying-glass"></i> Cào
-                        </button>
-                    </div>
-                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
+                    <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="Dán outline cào được vào đây&#10;&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
             </div>
         </div>
@@ -1847,99 +1829,36 @@
     }
 
 
-    // =============================================
-    // CRAWL OUTLINE — Dùng AI trực tiếp đọc URL (không cần proxy)
-    // =============================================
-    async function crawlOutline(num) {
-        const urlInput = document.getElementById('urlComp' + num);
-        const textarea = document.getElementById('outlineComp' + num);
-        const icon = document.getElementById('crawlIcon' + num);
-        const url = urlInput.value.trim();
-
-        if (!url || !url.startsWith('http')) {
-            showToast('Thiếu URL', 'Vui lòng dán link bài viết đối thủ ' + num + ' vào ô trên.', 'warning');
-            return;
-        }
-
-        const provider = localStorage.getItem('seo_ai_provider');
-        const key = localStorage.getItem('seo_ai_key');
-        if (!key || !provider) {
-            showToast('Chưa kết nối AI', 'Vui lòng kết nối API key trong tab AI Phân tích trước.', 'warning');
-            switchTab('ai-tab');
-            return;
-        }
-
-        icon.className = 'fa-solid fa-spinner fa-spin';
-        textarea.value = 'Đang tải nội dung trang...';
-        textarea.disabled = true;
-
-        try {
-            let outline = '';
-
-            // ── Bước 1: Thử fetch qua Jina AI Reader ──
-            textarea.value = 'Đang tải qua Jina AI Reader...';
-            let jinaText = '';
-            try {
-                const r = await fetch('https://r.jina.ai/' + url, {
-                    signal: AbortSignal.timeout(20000),
-                    headers: { 'Accept': 'text/plain,text/markdown,*/*', 'X-Return-Format': 'markdown' }
-                });
-                if (r.ok) {
-                    jinaText = await r.text();
-                }
-            } catch(e) {
-                console.warn('Jina fail:', e.message);
-            }
-
-            if (jinaText && jinaText.length > 200) {
-                // Parse heading từ Markdown Jina trả về
-                const lines = jinaText.split('\n');
-                const headingLines = [];
-                for (const line of lines) {
-                    const m = line.match(/^(#{1,3})\s+(.+)/);
-                    if (m) {
-                        const level = m[1].length;
-                        const text = m[2].replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim();
-                        if (text.length > 2 && text.length < 250) {
-                            headingLines.push('<h' + level + '> ' + text);
-                        }
-                    }
-                }
-                if (headingLines.length > 0) {
-                    outline = headingLines.join('\n');
-                }
-            }
-
-            // ── Bước 2: Nếu Jina không ra heading → dùng AI phân tích text từ Jina ──
-            if (!outline && jinaText && jinaText.length > 200) {
-                textarea.value = 'Jina đã tải xong, AI đang phân tích nội dung...';
-                const snippet = jinaText.substring(0, 6000);
-                const prompt = 'Đây là nội dung Markdown của một trang web SEO tiếng Việt. Hãy trích xuất tất cả tiêu đề H1, H2, H3 thuộc phần nội dung bài viết chính (bỏ menu, footer, sidebar, breadcrumb).\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách heading, không giải thích gì thêm.\n\nNội dung:\n' + snippet;
-                outline = await callProviderAPI(provider, key, prompt);
-            }
-
-            // ── Bước 3: Jina hoàn toàn thất bại → AI dùng knowledge về URL ──
-            if (!outline || outline.trim().length < 10) {
-                textarea.value = 'Proxy không tải được. AI đang phân tích URL...';
-                const prompt = 'Người dùng muốn biết cấu trúc heading (H1/H2/H3) của bài viết tại URL này: ' + url + '\n\nNếu bạn có thể truy cập hoặc biết nội dung trang này, hãy liệt kê các tiêu đề H1/H2/H3 của bài viết.\nNếu không biết chính xác, hãy dựa vào URL để đoán chủ đề và đề xuất cấu trúc heading hợp lý cho bài SEO về chủ đề đó.\n\nFormat mỗi dòng: <h1> ..., <h2> ..., <h3> ...\nGhi chú rõ nếu đây là đề xuất (không phải heading thật của trang).';
-                outline = await callProviderAPI(provider, key, prompt);
-            }
-
-            // ── Hiển thị kết quả ──
-            textarea.value = outline.trim();
-            runRealtimeAudit();
-
-            let hostname = url;
-            try { hostname = new URL(url).hostname; } catch(e) {}
-            showToast('✅ Đối thủ ' + num, 'Đã lấy outline từ ' + hostname, 'success');
-
-        } catch (err) {
-            textarea.value = '';
-            showToast('Lỗi Đối thủ ' + num, err.message, 'warning');
-        } finally {
-            icon.className = 'fa-solid fa-magnifying-glass';
-            textarea.disabled = false;
-        }
+    // ── Bookmarklet setup ──────────────────────────────────────────────
+    function initBookmarklet() {
+        const link = document.getElementById('bookmarkletLink');
+        if (!link) return;
+        const code = `javascript:(function(){
+var REMOVE=['nav','header','footer','aside','script','style','noscript','.sidebar','.menu','.navigation','.breadcrumb','.widget','[role=navigation]','[role=banner]','[role=contentinfo]'];
+var wrap=document.createElement('div');
+wrap.innerHTML=document.body.innerHTML;
+REMOVE.forEach(function(s){try{wrap.querySelectorAll(s).forEach(function(e){e.remove()});}catch(e){}});
+var out='';var seen={};
+wrap.querySelectorAll('h1,h2,h3').forEach(function(h){
+var t=(h.textContent||'').replace(/\s+/g,' ').trim();
+if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+='<'+h.tagName.toLowerCase()+'> '+t+'\n';}
+});
+if(!out){alert('Không tìm thấy heading H1/H2/H3 nào trong trang này!');return;}
+navigator.clipboard.writeText(out.trim()).then(function(){
+var n=document.createElement('div');
+n.style='position:fixed;top:20px;right:20px;z-index:999999;background:#3b82f6;color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:bold;font-family:sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.3)';
+n.textContent='✅ Đã copy '+out.split('\n').filter(Boolean).length+' headings! Dán vào SEO Auditor.';
+document.body.appendChild(n);setTimeout(function(){n.remove();},3000);
+}).catch(function(){
+prompt('Copy nội dung này:',out.trim());
+});
+})();`;
+        link.href = code;
+        // Ngăn click thường (chỉ dùng drag)
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('💡 Hướng dẫn', 'Kéo nút này vào Bookmarks Bar của Chrome. Sau đó mở trang đối thủ và click nó.', 'info');
+        });
     }
 
 
@@ -1949,6 +1868,7 @@
         runRealtimeAudit();
         renderAuditHistory();
         initAiPanel();
+        initBookmarklet();
     }
 
     // =============================================
