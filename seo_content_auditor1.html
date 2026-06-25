@@ -194,22 +194,56 @@
                 </h2>
                 <button type="button" onclick="autoGenerateSampleOutlines()" class="text-xs text-blue-600 hover:underline font-bold">Tự điền nhanh mẫu</button>
             </div>
-            
+
+            <!-- Crawler notice -->
+            <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex gap-2">
+                <i class="fa-solid fa-spider mt-0.5 shrink-0"></i>
+                <p>Dán link bài viết đối thủ → nhấn <strong>🔍 Cào Outline</strong> để AI tự động trích xuất H1/H2/H3. Yêu cầu đã kết nối AI ở tab <strong>AI Phân tích</strong>.</p>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-emerald-700 mb-1"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
+                <!-- Competitor 1 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-emerald-700"><i class="fa-solid fa-trophy mr-1"></i> Đối thủ 1 (Top 1)</label>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp1" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <button onclick="crawlOutline(1)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
+                            <i id="crawlIcon1" class="fa-solid fa-magnifying-glass"></i> Cào
+                        </button>
+                    </div>
                     <textarea id="outlineComp1" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Khái niệm bài viết chuẩn SEO là gì?&#10;&lt;H2&gt; Quy trình viết bài chuẩn SEO&#10;  &lt;H3&gt; Nghiên cứu từ khóa" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
+                <!-- Competitor 2 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-award mr-1"></i> Đối thủ 2 (Top 2)</label>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp2" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <button onclick="crawlOutline(2)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
+                            <i id="crawlIcon2" class="fa-solid fa-magnifying-glass"></i> Cào
+                        </button>
+                    </div>
                     <textarea id="outlineComp2" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Bài viết chuẩn SEO là thế nào?&#10;&lt;H2&gt; Cách viết bài chuẩn SEO On-page&#10;  &lt;H3&gt; Viết Meta Description" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
+                <!-- Competitor 3 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 3 (Top 3)</label>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp3" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <button onclick="crawlOutline(3)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
+                            <i id="crawlIcon3" class="fa-solid fa-magnifying-glass"></i> Cào
+                        </button>
+                    </div>
                     <textarea id="outlineComp3" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Tại sao doanh nghiệp cần viết bài chuẩn SEO?&#10;&lt;H2&gt; Quy trình viết bài tối ưu" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
+                <!-- Competitor 4 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-medal mr-1"></i> Đối thủ 4 (Top 4)</label>
+                    <div class="flex gap-1.5">
+                        <input type="url" id="urlComp4" placeholder="https://example.com/bai-viet..." class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <button onclick="crawlOutline(4)" class="px-2.5 py-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all whitespace-nowrap flex items-center gap-1">
+                            <i id="crawlIcon4" class="fa-solid fa-magnifying-glass"></i> Cào
+                        </button>
+                    </div>
                     <textarea id="outlineComp4" oninput="runRealtimeAudit()" rows="5" placeholder="&lt;H2&gt; Định nghĩa viết bài chuẩn SEO&#10;&lt;H2&gt; Bí quyết tối ưu hóa bài viết nhanh chóng" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono scroll-custom"></textarea>
                 </div>
             </div>
@@ -1814,6 +1848,92 @@
                 </div>
             `;
         });
+    }
+
+
+    // =============================================
+    // CRAWL OUTLINE — Dùng AI để trích xuất H1/H2/H3 từ URL đối thủ
+    // Dùng allorigins.win làm CORS proxy (miễn phí)
+    // =============================================
+    async function crawlOutline(num) {
+        const urlInput = document.getElementById(`urlComp${num}`);
+        const textarea = document.getElementById(`outlineComp${num}`);
+        const icon = document.getElementById(`crawlIcon${num}`);
+        const url = urlInput.value.trim();
+
+        if (!url || !url.startsWith('http')) {
+            showToast('Thiếu URL', `Vui lòng dán link bài viết đối thủ ${num} vào ô trên.`, 'warning');
+            return;
+        }
+
+        const provider = localStorage.getItem('seo_ai_provider');
+        const key = localStorage.getItem('seo_ai_key');
+        if (!key || !provider) {
+            showToast('Chưa kết nối AI', 'Vui lòng kết nối API key trong tab AI Phân tích trước.', 'warning');
+            switchTab('ai-tab');
+            return;
+        }
+
+        // Show loading state
+        icon.className = 'fa-solid fa-spinner fa-spin';
+        textarea.value = 'Đang tải trang và trích xuất outline...';
+        textarea.disabled = true;
+
+        try {
+            // Fetch HTML qua CORS proxy
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            const resp = await fetch(proxyUrl);
+            if (!resp.ok) throw new Error('Không thể tải trang. Thử lại hoặc nhập tay.');
+            const data = await resp.json();
+            const html = data.contents;
+
+            if (!html) throw new Error('Trang không trả về nội dung. Có thể trang yêu cầu đăng nhập.');
+
+            // Parse HTML để lấy headings
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // Loại bỏ nav, header, footer, sidebar
+            ['nav','header','footer','aside','.sidebar','.menu','.navigation','script','style'].forEach(sel => {
+                doc.querySelectorAll(sel).forEach(el => el.remove());
+            });
+
+            const headings = doc.querySelectorAll('h1, h2, h3');
+            let rawOutline = '';
+            headings.forEach(h => {
+                const tag = h.tagName.toLowerCase();
+                const text = h.innerText?.trim() || h.textContent?.trim() || '';
+                if (text.length > 2 && text.length < 200) {
+                    rawOutline += `<${tag}> ${text}
+`;
+                }
+            });
+
+            if (!rawOutline.trim()) throw new Error('Không tìm thấy heading nào. Trang có thể render bằng JavaScript (SPA).');
+
+            // Dùng AI để làm sạch và format lại
+            textarea.value = 'AI đang xử lý và làm sạch outline...';
+            const prompt = `Dưới đây là danh sách heading thô cào từ trang web đối thủ. Hãy:
+1. Lọc bỏ các heading không liên quan đến nội dung bài viết (menu, footer, sidebar, breadcrumb, tên website, v.v.)
+2. Giữ lại chỉ heading H1, H2, H3 thuộc phần nội dung chính của bài
+3. Format lại đúng chuẩn: mỗi dòng bắt đầu bằng <h1>, <h2> hoặc <h3>
+4. Không thêm giải thích, chỉ trả về danh sách heading đã lọc
+
+Heading thô:
+${rawOutline}`;
+
+            const cleaned = await callProviderAPI(provider, key, prompt);
+            textarea.value = cleaned.trim();
+            runRealtimeAudit();
+            showToast(`✅ Cào xong Đối thủ ${num}`, `Đã trích xuất outline từ ${url}`, 'success');
+
+        } catch (err) {
+            textarea.value = '';
+            showToast(`Lỗi Đối thủ ${num}`, err.message, 'warning');
+        } finally {
+            icon.className = 'fa-solid fa-magnifying-glass';
+            textarea.disabled = false;
+        }
     }
 
     // Initialize content load event
