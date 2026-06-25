@@ -409,7 +409,14 @@
                         </div>
 
                         <!-- Visual provider guide (read-only) -->
-                        <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div class="grid grid-cols-2 gap-2 text-center text-[10px]">
+                            <div class="p-2.5 bg-orange-50 border-2 border-orange-300 rounded-xl relative">
+                                <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">MIỄN PHÍ</span>
+                                <div class="text-base mb-1 mt-1">🟠</div>
+                                <div class="font-bold text-orange-700">Groq</div>
+                                <div class="text-orange-400 mt-0.5 font-mono">gsk_...</div>
+                                <a href="https://console.groq.com/keys" target="_blank" class="text-orange-600 underline text-[9px] block mt-1">Lấy key miễn phí</a>
+                            </div>
                             <div class="p-2.5 bg-violet-50 border border-violet-200 rounded-xl">
                                 <div class="text-base mb-1">🟣</div>
                                 <div class="font-bold text-violet-700">Claude</div>
@@ -1828,6 +1835,7 @@
     // Claude:  sk-ant-...
     // Gemini:  AIzaSy... (cũ) hoặc AQ.... (mới từ AI Studio)
     // OpenAI:  sk-proj-... hoặc sk-...
+    // Groq:    gsk_... (MIỄN PHÍ — console.groq.com)
     // =============================================
 
     const PROVIDER_CONFIG = {
@@ -1848,17 +1856,22 @@
             badge: '🟢 ChatGPT (OpenAI)',
             model: 'gpt-4o',
             badgeClass: 'bg-emerald-100 text-emerald-700'
+        },
+        groq: {
+            name: 'Groq',
+            badge: '🟠 Groq (Free)',
+            model: 'llama-3.3-70b-versatile',
+            badgeClass: 'bg-orange-100 text-orange-700'
         }
     };
 
     function detectProvider(key) {
         if (!key) return null;
         if (key.startsWith('sk-ant-')) return 'claude';
-        // Gemini: format cũ AIzaSy, format mới AQ., hoặc key dài không khớp các pattern khác
         if (key.startsWith('AIzaSy') || key.startsWith('AQ.') || key.startsWith('AQ')) return 'gemini';
+        if (key.startsWith('gsk_')) return 'groq';
         if (key.startsWith('sk-proj-') || key.startsWith('sk-')) return 'openai';
-        // Fallback: nếu key chứa dấu chấm và gạch ngang (pattern Gemini mới) → thử Gemini
-        if (/^[A-Za-z0-9_\-\.]{30,}$/.test(key) && key.includes('.')) return 'gemini';
+        if (/^[A-Za-z0-9_.]{30,}$/.test(key) && key.includes('.')) return 'gemini';
         return null;
     }
 
@@ -1895,7 +1908,7 @@
         }
         const provider = detectProvider(key);
         if (!provider) {
-            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy... hoặc AQ....), ChatGPT (sk-proj-...).');
+            showApiTestStatus('error', 'Không nhận diện được nhà cung cấp. Kiểm tra lại key — Claude (sk-ant-...), Gemini (AIzaSy.../AQ...), ChatGPT (sk-proj-...), Groq (gsk_...).');
             return;
         }
         showApiTestStatus('loading', `Đang kiểm tra kết nối ${PROVIDER_CONFIG[provider].name}...`);
@@ -2051,7 +2064,25 @@
                 return data.choices?.[0]?.message?.content || '';
             }
 
-            throw new Error('Provider không hợp lệ');
+            if (provider === 'groq') {
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        max_tokens: 1200,
+                        messages: [{ role: 'user', content: prompt }]
+                    })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                return data.choices?.[0]?.message?.content || '';
+            }
+
+        throw new Error('Provider không hợp lệ');
 
         } catch (err) {
             if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
