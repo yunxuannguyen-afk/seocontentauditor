@@ -1854,9 +1854,11 @@
     function detectProvider(key) {
         if (!key) return null;
         if (key.startsWith('sk-ant-')) return 'claude';
-        // Gemini: cả format cũ (AIzaSy...) lẫn format mới (AQ...)
-        if (key.startsWith('AIzaSy') || key.startsWith('AQ.')) return 'gemini';
+        // Gemini: format cũ AIzaSy, format mới AQ., hoặc key dài không khớp các pattern khác
+        if (key.startsWith('AIzaSy') || key.startsWith('AQ.') || key.startsWith('AQ')) return 'gemini';
         if (key.startsWith('sk-proj-') || key.startsWith('sk-')) return 'openai';
+        // Fallback: nếu key chứa dấu chấm và gạch ngang (pattern Gemini mới) → thử Gemini
+        if (/^[A-Za-z0-9_\-\.]{30,}$/.test(key) && key.includes('.')) return 'gemini';
         return null;
     }
 
