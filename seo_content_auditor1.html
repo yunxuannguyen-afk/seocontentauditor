@@ -432,14 +432,10 @@
                     <!-- ===== SETUP PANEL (shown when not connected) ===== -->
                     <div id="aiSetupPanel" class="space-y-4">
 
-                        <!-- Deploy notice -->
-                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex gap-2">
-                            <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
-                            <div class="space-y-1">
-                                <p><strong>⚠️ Tính năng AI chỉ hoạt động khi file được deploy lên web</strong>, không chạy được khi mở file trực tiếp (file://) hoặc trong claude.ai.</p>
-                                <p>👉 Deploy miễn phí lên <a href="https://pages.github.com" target="_blank" class="underline font-bold">GitHub Pages</a> hoặc <a href="https://netlify.com" target="_blank" class="underline font-bold">Netlify</a> rồi mở link đó.</p>
-                                <p class="text-amber-700">Key chỉ lưu trên trình duyệt của bạn, không qua server nào.</p>
-                            </div>
+                        <!-- Info banner -->
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex gap-2">
+                            <i class="fa-solid fa-shield-halved mt-0.5 shrink-0 text-slate-400"></i>
+                            <p>API key chỉ lưu trên trình duyệt của bạn, không qua bất kỳ server trung gian nào.</p>
                         </div>
 
                         <!-- Visual provider guide (read-only) -->
@@ -2111,13 +2107,6 @@ ${rawOutline}`;
     async function callProviderAPI(provider, key, prompt) {
         const model = PROVIDER_CONFIG[provider].model;
 
-        // Detect environment — file:// and artifact iframes cannot make cross-origin requests
-        const isLocalFile = location.protocol === 'file:';
-        const isArtifact = location.hostname === 'claude.ai' || location.hostname.endsWith('.claude.ai') || window.self !== window.top;
-        if (isLocalFile || isArtifact) {
-            throw new Error('Tính năng AI không hoạt động khi mở file trực tiếp hoặc trong claude.ai. Hãy deploy lên GitHub Pages hoặc Netlify rồi mở link đó.');
-        }
-
         try {
             if (provider === 'claude') {
                 const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2206,7 +2195,7 @@ ${rawOutline}`;
 
         } catch (err) {
             if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-                throw new Error('Không thể kết nối API. Hãy deploy file lên GitHub Pages hoặc Netlify — tính năng AI không chạy được từ file local hoặc claude.ai.');
+                throw new Error('Không thể kết nối API. Vui lòng kiểm tra lại API key và kết nối mạng.');
             }
             throw err;
         }
