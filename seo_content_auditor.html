@@ -1848,95 +1848,8 @@
 
 
     // =============================================
-    // CRAWL OUTLINE — Multi-proxy + AI fallback
+    // CRAWL OUTLINE — Dùng AI trực tiếp đọc URL (không cần proxy)
     // =============================================
-
-    // ── FETCH qua Jina AI Reader (r.jina.ai) ──────────────────────────
-    // Jina chuyển bất kỳ URL nào thành Markdown sạch, hỗ trợ SPA/JS render,
-    // miễn phí, không cần key, không bị CORS.
-    // Fallback: corsproxy.io → allorigins nếu Jina chậm.
-    async function fetchViaProxy(url) {
-        const encoded = encodeURIComponent(url);
-
-        const proxies = [
-            // 1. Jina AI Reader — trả về Markdown có heading rõ ràng, hỗ trợ mọi trang
-            async () => {
-                const r = await fetch('https://r.jina.ai/' + url, {
-                    signal: AbortSignal.timeout(20000),
-                    headers: { 'Accept': 'text/markdown,text/plain,*/*' }
-                });
-                if (!r.ok) throw new Error('jina ' + r.status);
-                const t = await r.text();
-                if (t.length < 100) throw new Error('Jina trả về rỗng');
-                return { text: t, isMarkdown: true };
-            },
-            // 2. corsproxy.io
-            async () => {
-                const r = await fetch('https://corsproxy.io/?' + encoded, {
-                    signal: AbortSignal.timeout(12000)
-                });
-                if (!r.ok) throw new Error('corsproxy ' + r.status);
-                const t = await r.text();
-                if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return { text: t, isMarkdown: false };
-            },
-            // 3. allorigins
-            async () => {
-                const r = await fetch('https://api.allorigins.win/raw?url=' + encoded, {
-                    signal: AbortSignal.timeout(12000)
-                });
-                if (!r.ok) throw new Error('allorigins ' + r.status);
-                const t = await r.text();
-                if (t.length < 300) throw new Error('Nội dung quá ngắn');
-                return { text: t, isMarkdown: false };
-            },
-        ];
-
-        let lastErr = 'Không rõ';
-        for (let i = 0; i < proxies.length; i++) {
-            try {
-                const result = await proxies[i]();
-                console.log('✅ Proxy ' + (i+1) + ' OK');
-                return result;
-            } catch(e) {
-                lastErr = e.message;
-                console.warn('Proxy ' + (i+1) + ' fail:', e.message);
-            }
-        }
-        throw new Error('Không thể tải trang. ' + lastErr);
-    }
-
-    function extractHeadingsFromHTML(html) {
-        let out = '';
-        // Method 1: DOMParser
-        try {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            ['nav','header','footer','aside','script','style','noscript',
-             '.sidebar','.menu','.navigation','.breadcrumb','.widget',
-             '[role="navigation"]','[role="banner"]','[role="contentinfo"]'
-            ].forEach(function(sel) {
-                try { doc.querySelectorAll(sel).forEach(function(el) { el.remove(); }); } catch(e) {}
-            });
-            doc.querySelectorAll('h1, h2, h3').forEach(function(h) {
-                const text = (h.textContent || '').trim().replace(/\s+/g, ' ');
-                if (text.length > 2 && text.length < 250)
-                    out += '<' + h.tagName.toLowerCase() + '> ' + text + '\n';
-            });
-            if (out.trim()) return out;
-        } catch(e) {}
-
-        // Method 2: Regex
-        const re = /<h([123])[^>]*>([\s\S]*?)<\/h[123]>/gi;
-        let m;
-        while ((m = re.exec(html)) !== null) {
-            const text = m[2].replace(/<[^>]+>/g, '').trim().replace(/\s+/g, ' ');
-            if (text.length > 2 && text.length < 250)
-                out += '<h' + m[1] + '> ' + text + '\n';
-        }
-        return out;
-    }
-
     async function crawlOutline(num) {
         const urlInput = document.getElementById('urlComp' + num);
         const textarea = document.getElementById('outlineComp' + num);
@@ -1947,6 +1860,7 @@
             showToast('Thiếu URL', 'Vui lòng dán link bài viết đối thủ ' + num + ' vào ô trên.', 'warning');
             return;
         }
+
         const provider = localStorage.getItem('seo_ai_provider');
         const key = localStorage.getItem('seo_ai_key');
         if (!key || !provider) {
@@ -1956,66 +1870,68 @@
         }
 
         icon.className = 'fa-solid fa-spinner fa-spin';
-        textarea.value = 'Đang tải trang (thử 3 proxy)...';
+        textarea.value = 'Đang tải nội dung trang...';
         textarea.disabled = true;
 
         try {
-            // Bước 1: Fetch nội dung
-            const fetched = await fetchViaProxy(url);
-            const sizeKB = Math.round(fetched.text.length / 1024);
-            textarea.value = 'Đã tải ' + sizeKB + 'KB, đang phân tích heading...';
+            let outline = '';
 
-            let rawOutline = '';
+            // ── Bước 1: Thử fetch qua Jina AI Reader ──
+            textarea.value = 'Đang tải qua Jina AI Reader...';
+            let jinaText = '';
+            try {
+                const r = await fetch('https://r.jina.ai/' + url, {
+                    signal: AbortSignal.timeout(20000),
+                    headers: { 'Accept': 'text/plain,text/markdown,*/*', 'X-Return-Format': 'markdown' }
+                });
+                if (r.ok) {
+                    jinaText = await r.text();
+                }
+            } catch(e) {
+                console.warn('Jina fail:', e.message);
+            }
 
-            if (fetched.isMarkdown) {
-                // Jina trả về Markdown — parse heading ## / # trực tiếp
-                const lines = fetched.text.split('\n');
+            if (jinaText && jinaText.length > 200) {
+                // Parse heading từ Markdown Jina trả về
+                const lines = jinaText.split('\n');
+                const headingLines = [];
                 for (const line of lines) {
                     const m = line.match(/^(#{1,3})\s+(.+)/);
                     if (m) {
                         const level = m[1].length;
-                        const text = m[2].replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim();
+                        const text = m[2].replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim();
                         if (text.length > 2 && text.length < 250) {
-                            rawOutline += '<h' + level + '> ' + text + '\n';
+                            headingLines.push('<h' + level + '> ' + text);
                         }
                     }
                 }
-            } else {
-                // HTML thường — parse DOM
-                rawOutline = extractHeadingsFromHTML(fetched.text);
+                if (headingLines.length > 0) {
+                    outline = headingLines.join('\n');
+                }
             }
+
+            // ── Bước 2: Nếu Jina không ra heading → dùng AI phân tích text từ Jina ──
+            if (!outline && jinaText && jinaText.length > 200) {
+                textarea.value = 'Jina đã tải xong, AI đang phân tích nội dung...';
+                const snippet = jinaText.substring(0, 6000);
+                const prompt = 'Đây là nội dung Markdown của một trang web SEO tiếng Việt. Hãy trích xuất tất cả tiêu đề H1, H2, H3 thuộc phần nội dung bài viết chính (bỏ menu, footer, sidebar, breadcrumb).\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách heading, không giải thích gì thêm.\n\nNội dung:\n' + snippet;
+                outline = await callProviderAPI(provider, key, prompt);
+            }
+
+            // ── Bước 3: Jina hoàn toàn thất bại → AI dùng knowledge về URL ──
+            if (!outline || outline.trim().length < 10) {
+                textarea.value = 'Proxy không tải được. AI đang phân tích URL...';
+                const prompt = 'Người dùng muốn biết cấu trúc heading (H1/H2/H3) của bài viết tại URL này: ' + url + '\n\nNếu bạn có thể truy cập hoặc biết nội dung trang này, hãy liệt kê các tiêu đề H1/H2/H3 của bài viết.\nNếu không biết chính xác, hãy dựa vào URL để đoán chủ đề và đề xuất cấu trúc heading hợp lý cho bài SEO về chủ đề đó.\n\nFormat mỗi dòng: <h1> ..., <h2> ..., <h3> ...\nGhi chú rõ nếu đây là đề xuất (không phải heading thật của trang).';
+                outline = await callProviderAPI(provider, key, prompt);
+            }
+
+            // ── Hiển thị kết quả ──
+            textarea.value = outline.trim();
+            runRealtimeAudit();
 
             let hostname = url;
             try { hostname = new URL(url).hostname; } catch(e) {}
-
-            if (!rawOutline.trim()) {
-                // Fallback: AI đọc text thô
-                textarea.value = 'Không tìm thấy heading. AI đang phân tích nội dung...';
-                const textSnippet = fetched.text
-                    .replace(/<[^>]+>/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim()
-                    .substring(0, 5000);
-
-                const prompt = 'Đây là nội dung trang web SEO. Hãy xác định và trích xuất các tiêu đề H1, H2, H3 của bài viết chính (bỏ menu/footer/sidebar).\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nNội dung:\n' + textSnippet;
-
-                const result = await callProviderAPI(provider, key, prompt);
-                textarea.value = result.trim();
-                runRealtimeAudit();
-                showToast('✅ Đối thủ ' + num, 'AI phân tích xong từ ' + hostname, 'success');
-                return;
-            }
-
-            // Bước 3: AI lọc sạch
-            const headingCount = rawOutline.split('\n').filter(Boolean).length;
-            textarea.value = 'Tìm thấy ' + headingCount + ' headings, AI đang lọc nội dung chính...';
-
-            const prompt = 'Lọc danh sách heading từ trang web SEO. Giữ lại chỉ H1/H2/H3 của nội dung bài viết chính, bỏ menu/footer/sidebar/quảng cáo.\nMỗi dòng format: <h1> ..., <h2> ..., <h3> ...\nChỉ trả về danh sách, không giải thích.\n\nHeading:\n' + rawOutline;
-
-            const cleaned = await callProviderAPI(provider, key, prompt);
-            textarea.value = cleaned.trim();
-            runRealtimeAudit();
-            showToast('✅ Đối thủ ' + num, 'Đã cào ' + cleaned.split('\n').filter(Boolean).length + ' headings từ ' + hostname, 'success');
+            showToast('✅ Đối thủ ' + num, 'Đã lấy outline từ ' + hostname, 'success');
 
         } catch (err) {
             textarea.value = '';
