@@ -1842,63 +1842,98 @@
     }
 
 
-    // ── Fetch Outline từ URL — dùng Jina AI + AI parse ──────────────
+    // ── Fetch Outline từ URL ──────────────────────────────────────────
     async function fetchOutline(num) {
-        var url = (document.getElementById('urlComp' + num).value || '').trim();
+        var urlEl = document.getElementById('urlComp' + num);
         var textarea = document.getElementById('outlineComp' + num);
         var btn = document.getElementById('btnFetch' + num);
+        var url = urlEl ? urlEl.value.trim() : '';
 
         if (!url || !url.startsWith('http')) {
-            showToast('Thiếu URL', 'Vui lòng dán link bài viết vào ô trên.', 'warning');
+            showToast('Thieu URL', 'Vui long dan link bai viet vao o tren.', 'warning');
             return;
         }
-
         var provider = localStorage.getItem('seo_ai_provider');
         var key = localStorage.getItem('seo_ai_key');
         if (!key || !provider) {
-            showToast('Chưa kết nối AI', 'Vui lòng nhập API key trong tab AI Phân tích.', 'warning');
+            showToast('Chua ket noi AI', 'Vui long nhap API key trong tab AI Phan tich.', 'warning');
             switchTab('ai-tab');
             return;
         }
 
-        // Loading state
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        textarea.value = 'Đang tải nội dung trang...';
+        textarea.value = 'Dang tai trang...';
 
         try {
-            // Fetch qua Jina AI Reader — trả về Markdown sạch
-            var jinaUrl = 'https://r.jina.ai/' + url;
-            var resp = await fetch(jinaUrl, {
-                signal: AbortSignal.timeout(25000),
-                headers: { 'Accept': 'text/plain,text/markdown,*/*', 'X-Return-Format': 'markdown' }
+            var resp = await fetch('https://r.jina.ai/' + url, {
+                signal: AbortSignal.timeout(30000),
+                headers: {
+                    'Accept': 'text/plain,text/markdown,*/*',
+                    'X-Return-Format': 'markdown',
+                    'X-Remove-Selector': 'nav,header,footer,aside,.sidebar,.menu,.navigation,.breadcrumb,.widget,.ad',
+                    'X-Target-Selector': 'article,main,.post-content,.entry-content,.article-body,.content-body'
+                }
             });
-
-            if (!resp.ok) throw new Error('Jina không tải được trang (HTTP ' + resp.status + ')');
+            if (!resp.ok) throw new Error('Jina HTTP ' + resp.status);
             var md = await resp.text();
-            if (!md || md.length < 100) throw new Error('Trang trả về nội dung rỗng');
+            if (!md || md.length < 100) throw new Error('Trang tra ve noi dung rong');
 
-            textarea.value = 'Đã tải ' + Math.round(md.length/1024) + 'KB, AI đang phân tích...';
+            textarea.value = 'Da tai ' + Math.round(md.length/1024) + 'KB. Dang phan tich...';
 
-            // Lấy 6000 ký tự đầu để gửi AI
-            var snippet = md.substring(0, 6000);
+            // Parse heading từ Markdown (# ## ###)
+            var headings = [];
+            var seen = {};
+            var mdLines = md.split('\n');
+            for (var i = 0; i < mdLines.length; i++) {
+                var ln = mdLines[i].trim();
+                var m = ln.match(/^(#{1,3})\s+(.+)/);
+                if (m) {
+                    var lvl = m[1].length;
+                    var txt = m[2].replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`#]/g, '').trim();
+                    if (txt.length > 2 && txt.length < 250 && !seen[txt]) {
+                        seen[txt] = 1;
+                        headings.push('<h' + lvl + '> ' + txt);
+                    }
+                }
+            }
 
-            var prompt = 'Extract all H1, H2, H3 headings from the main article body in this markdown. Skip menu/nav/header/footer/sidebar/ads. Format: <h1> title, <h2> title, <h3> title. Return ONLY the list.\n\n' + snippet;
+            var finalResult = '';
 
-            var result = await callProviderAPI(provider, key, prompt);
-            textarea.value = result.trim();
+            if (headings.length > 0) {
+                // Có heading → AI lọc bỏ menu/footer
+                textarea.value = 'Tim thay ' + headings.length + ' headings, AI loc sach...';
+                var rawList = headings.join('\n');
+                var p1 = 'Filter this heading list, keep ONLY headings from the main article body.'
+                    + ' Remove: site name, menu, nav, sidebar, footer, ads, related posts, comments.'
+                    + ' Return ONLY filtered list in same <h1>/<h2>/<h3> format, one per line, no explanation.\n\n'
+                    + rawList;
+                finalResult = await callProviderAPI(provider, key, p1);
+            } else {
+                // Không có heading dạng # → AI đọc text để tìm heading
+                textarea.value = 'Khong phan tich duoc Markdown. AI dang tim heading...';
+                var snippet = md.substring(0, 12000);
+                var p2 = 'Extract ALL H1 H2 H3 headings from the main article in this markdown.'
+                    + ' Skip nav/menu/footer/sidebar/ads.'
+                    + ' Format: <h1> title OR <h2> title OR <h3> title, one per line.'
+                    + ' Return ONLY the list, no explanation.\n\n'
+                    + snippet;
+                finalResult = await callProviderAPI(provider, key, p2);
+            }
+
+            textarea.value = finalResult.trim();
             runRealtimeAudit();
-
-            var cnt = result.trim().split('\n').filter(Boolean).length;
-            var host = url; try { host = new URL(url).hostname; } catch(e) {}
+            var cnt = finalResult.trim().split('\n').filter(Boolean).length;
+            var host = url;
+            try { host = new URL(url).hostname; } catch(e) {}
             showToast('Cao xong Doi thu ' + num, 'Da lay ' + cnt + ' headings tu ' + host, 'success');
 
         } catch(err) {
             textarea.value = '';
-            showToast('Lỗi Đối thủ ' + num, err.message, 'warning');
+            showToast('Loi Doi thu ' + num, err.message, 'warning');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Cào';
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Cao';
         }
     }
 
