@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO Content Auditor - Công cụ tối ưu Content chuẩn SEO</title>
+    <title>SEO Content Auditor V5.4 - AI + Bookmarklet</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
@@ -130,7 +130,7 @@
             </div>
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                    SEO Content Auditor <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">V5.3 (Restore History Edition)</span>
+                    SEO Content Auditor <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">V5.4 (AI + Bookmarklet Edition)</span>
                 </h1>
                 <p class="text-xs text-slate-500">Hệ thống đồng bộ dán trực tiếp từ Google Docs & so sánh thông minh đối thủ</p>
             </div>
@@ -196,45 +196,49 @@
             </div>
 
             <!-- Bookmarklet banner -->
-            <div class="mb-4 bg-violet-50 border-2 border-violet-300 rounded-xl p-4 space-y-3">
-                <p class="text-xs font-bold text-violet-900 flex items-center gap-2">
-                    <i class="fa-solid fa-spider text-violet-500"></i>
-                    Cào Outline đối thủ tự động — Setup 1 lần, dùng mãi
-                </p>
-
-                <!-- Bước 1 -->
-                <div class="flex items-start gap-3 text-xs text-violet-800">
-                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
-                    <p>Nhấn <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+Shift+B</kbd> để hiện <strong>Bookmarks Bar</strong> trong Chrome</p>
+            <div class="mb-4 bg-violet-50 border-2 border-violet-300 rounded-xl overflow-hidden">
+                <div class="px-4 py-3 flex items-center justify-between">
+                    <p class="text-xs font-bold text-violet-900 flex items-center gap-2">
+                        <i class="fa-solid fa-spider text-violet-500"></i>
+                        Cào Outline đối thủ tự động
+                    </p>
+                    <span class="text-[10px] text-violet-500 font-medium">Setup 1 lần · dùng mãi</span>
                 </div>
 
-                <!-- Bước 2 — nút kéo -->
-                <div class="flex items-start gap-3 text-xs text-violet-800">
-                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
-                    <div class="space-y-2 w-full">
-                        <p>Kéo nút bên dưới vào thanh Bookmarks Bar. Sau đó mở trang đối thủ → click bookmarklet → <strong>di chuột hover vào vùng bài viết → click để chọn</strong> → nhấn Lấy Outline:</p>
-                        <a id="bookmarkletLink"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow-md cursor-grab select-none transition-all">
-                            🕷️ Cào SEO Outline
-                        </a>
-                        <p class="text-[10px] text-violet-500">👆 Giữ chuột trái → kéo lên thanh bookmark → thả ra</p>
+                <div class="px-4 pb-4 space-y-3 border-t border-violet-100 pt-3">
+                    <!-- Bước 1 -->
+                    <div class="flex items-start gap-2 text-xs text-violet-800">
+                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">1</span>
+                        <p>Nhấn <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+Shift+B</kbd> để hiện <strong>Bookmarks Bar</strong></p>
                     </div>
-                </div>
 
-                <!-- Bước 3 & 4 -->
-                <div class="flex items-start gap-3 text-xs text-violet-800">
-                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
-                    <p>Mở trang đối thủ bất kỳ → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar → heading tự động copy vào clipboard</p>
-                </div>
-                <div class="flex items-start gap-3 text-xs text-violet-800">
-                    <span class="shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
-                    <p>Quay lại đây → <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+V</kbd> dán vào ô Đối thủ 1/2/3/4 bên dưới</p>
-                </div>
+                    <!-- Bước 2: Nút kéo -->
+                    <div class="flex items-start gap-2 text-xs text-violet-800">
+                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">2</span>
+                        <div class="space-y-2">
+                            <p><strong>Kéo nút bên dưới</strong> lên Bookmarks Bar (giữ chuột trái → kéo lên → thả):</p>
+                            <a id="bookmarkletLink" href="#"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl shadow cursor-grab active:cursor-grabbing select-none transition-all">
+                                🕷️ Cào SEO Outline
+                            </a>
+                            <p class="text-[10px] text-violet-400">⚠️ Kéo lên Bookmarks Bar — đừng click trực tiếp tại đây</p>
+                        </div>
+                    </div>
 
-                <!-- Không có Bookmarks Bar? -->
-                <div class="bg-white border border-violet-100 rounded-lg p-2.5 text-[10px] text-slate-500 space-y-1">
-                    <p class="font-semibold text-slate-600">💡 Không thấy thanh Bookmarks Bar?</p>
-                    <p>Chrome → nhấn <kbd class="border px-1 rounded font-mono">Ctrl+Shift+B</kbd> để bật lên. Hoặc click chuột phải vào vùng trống trên thanh tab → chọn <em>Show bookmarks bar</em>.</p>
+                    <!-- Bước 3 -->
+                    <div class="flex items-start gap-2 text-xs text-violet-800">
+                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">3</span>
+                        <div class="space-y-1">
+                            <p>Mở trang đối thủ → <strong>bôi đen vùng bài viết</strong> (hoặc không cần bôi nếu trang có thẻ article/main) → click <strong>🕷️ Cào SEO Outline</strong> trên Bookmarks Bar</p>
+                            <p class="text-[10px] text-violet-500">Tool tự tìm article/main/content, nếu không có thì bôi đen trước</p>
+                        </div>
+                    </div>
+
+                    <!-- Bước 4 -->
+                    <div class="flex items-start gap-2 text-xs text-violet-800">
+                        <span class="shrink-0 bg-violet-600 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px] mt-0.5">4</span>
+                        <p>Quay lại đây → <kbd class="bg-white border border-violet-300 px-1.5 py-0.5 rounded font-mono text-[10px]">Ctrl+V</kbd> dán vào ô Đối thủ bên dưới</p>
+                    </div>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1864,56 +1868,37 @@
         var link = document.getElementById('bookmarkletLink');
         if (!link) return;
 
-        // Bookmarklet code — gán qua JS để tránh HTML encoding issue
-        var bm = [
-            'javascript:(function(){',
-            'if(document.getElementById("_seo_picker"))return;',
-            'var st=document.createElement("style");',
-            'st.textContent="._sh{outline:3px solid #7c3aed!important;background:rgba(124,58,237,0.08)!important;cursor:crosshair!important;}._ss{outline:3px solid #16a34a!important;background:rgba(22,163,74,0.08)!important;}',
-            '#_seo_picker{position:fixed;top:16px;right:16px;z-index:2147483647;background:#1e293b;color:#fff;padding:16px 18px;border-radius:14px;font:600 13px/1.5 sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.5);min-width:280px;}',
-            '#_seo_picker p{margin:0 0 10px;font-size:12px;opacity:.85;}',
-            '#_seo_picker .r{display:flex;gap:8px;}',
-            '#_seo_picker button{flex:1;padding:9px;border:none;border-radius:8px;font:700 12px sans-serif;cursor:pointer;}',
-            '#_ok{background:#7c3aed;color:#fff;}#_cl{background:#374151;color:#fff;}";',
-            'document.head.appendChild(st);',
-            'var p=document.createElement("div");p.id="_seo_picker";',
-            'p.innerHTML="<p>🕷️ <b>Di chuột vào vùng bài viết</b> → <b>click chọn</b> → nhấn Lấy Outline</p><div class=\"r\"><button id=\"_ok\" disabled>✅ Lấy Outline</button><button id=\"_cl\">✖ Huỷ</button></div>";',
-            'document.body.appendChild(p);',
-            'var hv=null,sl=null;',
-            'function mv(e){if(sl)return;var el=e.target;if(el.closest&&el.closest("#_seo_picker"))return;if(hv&&hv!==el)hv.classList.remove("_sh");hv=el;el.classList.add("_sh");}',
-            'function cl(e){var el=e.target;if(el.closest&&el.closest("#_seo_picker"))return;e.preventDefault();e.stopPropagation();if(sl)sl.classList.remove("_ss");if(hv)hv.classList.remove("_sh");sl=el;el.classList.add("_ss");',
-            'document.getElementById("_ok").disabled=false;',
-            'document.getElementById("_ok").textContent="✅ Lấy Outline từ vùng này";',
-            'p.querySelector("p").innerHTML="<span style=\"color:#4ade80\">✅ Đã chọn!</span> Nhấn Lấy Outline hoặc click vùng khác.";}',
-            'document.addEventListener("mousemove",mv,true);',
-            'document.addEventListener("click",cl,true);',
-            'document.getElementById("_ok").addEventListener("click",function(){',
-            'if(!sl)return;',
-            'var hs=sl.querySelectorAll("h1,h2,h3");var out="";var seen={};',
-            'hs.forEach(function(h){var t=(h.textContent||"").replace(/\s+/g," ").trim();',
-            'if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+="<"+h.tagName.toLowerCase()+"> "+t+"\n";}});',
-            'done();',
-            'if(!out){alert("Không có H1/H2/H3 trong vùng này. Thử click vào phần tử cha bọc toàn bài.");return;}',
-            'navigator.clipboard.writeText(out.trim()).then(function(){',
-            'var n=document.createElement("div");',
-            'n.style="position:fixed;top:16px;right:16px;z-index:2147483647;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.5 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)";',
-            'n.innerHTML="🕷️ Đã copy <b>"+out.split("\n").filter(Boolean).length+"</b> headings!<br><small style=font-weight:400>Quay lại SEO Auditor → Ctrl+V dán vào ô Đối thủ</small>";',
-            'document.body.appendChild(n);setTimeout(function(){n.remove();},4000);',
-            '}).catch(function(){prompt("Copy nội dung này:",out.trim());});});',
-            'document.getElementById("_cl").addEventListener("click",done);',
-            'function done(){document.removeEventListener("mousemove",mv,true);document.removeEventListener("click",cl,true);',
-            'if(hv)hv.classList.remove("_sh");if(sl)sl.classList.remove("_ss");',
-            'var s=document.getElementById("_seo_picker");var st2=document.querySelector("style#_seo_st");',
-            'if(s)s.remove();if(st2)st2.remove();st.remove();}',
-            '})();'
-        ].join('');
+        // Bookmarklet: tự tìm article/main, fallback bôi đen
+        var code = 'javascript:(function(){'
+            + 'var s=window.getSelection();'
+            + 'var r=s&&s.rangeCount>0?s.getRangeAt(0).commonAncestorContainer:null;'
+            + 'var root=r?(r.nodeType===1?r:r.parentElement):null;'
+            + 'if(!root||root===document.body||root===document.documentElement){'
+            + 'var c=["article","main",".post-content",".entry-content",".article-body","[class*=content]","[class*=article]","[id*=content]","[id*=article]"];'
+            + 'for(var i=0;i<c.length;i++){var el=document.querySelector(c[i]);if(el&&el.querySelectorAll("h2,h3").length>0){root=el;break;}}'
+            + 'if(!root||root===document.body)root=document.body;'
+            + '}'
+            + 'var hs=root.querySelectorAll("h1,h2,h3");'
+            + 'var out="";var seen={};'
+            + 'hs.forEach(function(h){'
+            + 'var t=(h.textContent||"").replace(/\s+/g," ").trim();'
+            + 'if(t.length>2&&t.length<250&&!seen[t]){seen[t]=1;out+="<"+h.tagName.toLowerCase()+"> "+t+"\n";}'
+            + '});'
+            + 'if(!out){alert("Không thấy heading. Hãy bôi đen vùng bài viết rồi click lại.");return;}'
+            + 'var cnt=out.split("\n").filter(Boolean).length;'
+            + 'navigator.clipboard.writeText(out.trim()).then(function(){'
+            + 'var n=document.createElement("div");'
+            + 'n.style="position:fixed;top:16px;right:16px;z-index:9999999;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:12px;font:bold 14px/1.5 sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.3)";'
+            + 'n.innerHTML="\uD83D\uDD77\uFE0F Đã copy <b>"+cnt+"</b> headings!<br><small style=font-weight:400>Quay lại SEO Auditor → Ctrl+V dán vào ô Đối thủ</small>";'
+            + 'document.body.appendChild(n);setTimeout(function(){n.remove();},4000);'
+            + '}).catch(function(){prompt("Copy nội dung này:",out.trim());});'
+            + '})();';
 
-        link.href = bm;
+        link.href = code;
 
-        // Click thường → show toast hướng dẫn
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            showToast('💡 Cách dùng', 'Giữ chuột trái vào nút → kéo lên Bookmarks Bar → thả ra. Đừng click!', 'info');
+            showToast('⚠️ Kéo lên Bookmarks Bar', 'Giữ chuột trái vào nút → kéo lên thanh Bookmarks Bar → thả ra. Không click!', 'warning');
         });
     }
 
